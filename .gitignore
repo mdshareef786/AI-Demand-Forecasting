@@ -1,0 +1,16 @@
+# Python
+backend/venv/
+__pycache__/
+*.pyc
+
+# Reports
+backend/reports/
+
+# Uploads
+backend/uploads/
+
+# Node
+frontend/node_modules/
+
+# Environment
+.env
