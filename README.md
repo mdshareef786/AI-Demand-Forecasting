@@ -214,4 +214,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 # Author
 
 ## Syed Mahammad Sharref
-- Python eveloper
+- Python Developer
