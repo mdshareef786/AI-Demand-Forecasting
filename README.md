@@ -77,7 +77,8 @@ The platform allows users to upload historical sales datasets, analyze business 
 ---
 
 # Project Structure
-```
+
+```bash
 AI-Demand-Forecasting/
 
 ├── backend/
@@ -91,11 +92,8 @@ AI-Demand-Forecasting/
 │   │   ├── database.py
 │   │   └── main.py
 │   │
-<<<<<<< HEAD
-=======
 │   ├── reports/
 │   ├── uploads/
->>>>>>> 3a51d9d (Final project updates)
 │   ├── requirements.txt
 │   └── .env
 │
@@ -105,25 +103,19 @@ AI-Demand-Forecasting/
 │   │   ├── components/
 │   │   ├── layouts/
 │   │   ├── pages/
-<<<<<<< HEAD
 │   │   ├── assets/
 │   │   └── main.jsx
-=======
-│   │   └── assets/
->>>>>>> 3a51d9d (Final project updates)
 │   │
 │   ├── package.json
 │   └── vite.config.js
 │
-<<<<<<< HEAD
-=======
 ├── screenshots/
 │
->>>>>>> 3a51d9d (Final project updates)
 ├── .gitignore
 │
 └── README.md
 ```
+
 ---
 
 # Installation Guide
@@ -210,6 +202,28 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ---
 
+# Screenshots
+
+## Dashboard
+<img width="100%" alt="Dashboard" src="screenshots/dashboard.png">
+
+---
+
+## Forecast Page
+<img width="100%" alt="Forecast" src="screenshots/forecast.png">
+
+---
+
+## Reports Module
+<img width="100%" alt="Reports" src="screenshots/reports.png">
+
+---
+
+## Swagger API
+<img width="100%" alt="Swagger" src="screenshots/swagger.png">
+
+---
+
 # Future Enhancements
 
 - XGBoost Forecasting
@@ -223,13 +237,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 # Author
 
-## Syed Mahammad Shareef
-<<<<<<< HEAD
-
-- Python Developer
-=======
-- Python Developer
-
+## Syed Mahammad Sharref
+- Python eveloper
+  
 ### Skills
 - Data Analytics
 - FastAPI
@@ -238,4 +248,3 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 - Forecasting Systems
 - Power BI
 - Full-Stack Development
->>>>>>> 3a51d9d (Final project updates)
