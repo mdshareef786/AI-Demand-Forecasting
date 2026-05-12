@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Upload,
   BrainCircuit,
+  FileText,
   LogOut
 } from "lucide-react"
 
@@ -56,6 +57,12 @@ function MainLayout() {
       name: "Forecast",
       path: "/forecast",
       icon: <BrainCircuit size={20} />
+    },
+
+    {
+      name: "Reports",
+      path: "/reports",
+      icon: <FileText size={20} />
     }
   ]
 

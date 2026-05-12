@@ -14,6 +14,8 @@ import UploadDataset from "./pages/UploadDataset"
 
 import Forecast from "./pages/Forecast"
 
+import Reports from "./pages/Reports"
+
 import MainLayout from "./layouts/MainLayout"
 
 import ProtectedRoute from "./components/ProtectedRoute"
@@ -67,6 +69,11 @@ function App() {
           <Route
             path="/forecast"
             element={<Forecast />}
+          />
+
+          <Route
+            path="/reports"
+            element={<Reports />}
           />
 
         </Route>

@@ -2,51 +2,52 @@
 
 An AI-powered full-stack business intelligence and demand forecasting platform built using FastAPI, React.js, and Prophet forecasting.
 
-The application allows users to upload sales datasets, analyze business performance, generate AI-powered future demand predictions, and visualize insights through an interactive dashboard.
+The platform allows users to upload historical sales datasets, analyze business performance, generate AI-powered future demand predictions, and download forecasting reports through an interactive analytics dashboard.
 
 ---
 
 # Features
 
-## Authentication System
+## Authentication Module
 - User Registration & Login
 - JWT Authentication
 - Protected Routes
-- Secure Session Handling
+- Secure Session Management
 
 ---
 
 ## Dataset Upload Module
-- Upload CSV/Excel datasets
-- Automatic dataset validation
-- Data cleaning support
-- Missing value handling
-- Duplicate removal
+- Upload CSV/Excel Datasets
+- Dataset Validation
+- Missing Value Handling
+- Duplicate Record Cleaning
+- Automated Data Processing
 
 ---
 
 ## Analytics Dashboard
-- Total Revenue Analysis
+- Total Revenue Analytics
 - Monthly Sales Trends
 - Top Performing Products
-- Interactive Charts
+- Interactive Business Charts
 - KPI Analytics Cards
 
 ---
 
-## AI Forecasting System
+## AI Forecasting Module
 - Prophet Time-Series Forecasting
+- Future Revenue Prediction
 - Product-wise Forecasting
 - Category-wise Forecasting
-- Future Revenue Prediction
 - Forecast Error Evaluation (MAPE)
 
 ---
 
 ## Reports Module
-- PDF Forecast Reports
-- Business Analytics Export
-- Forecast Summary Generation
+- PDF Report Generation
+- Excel Report Export
+- Forecast Summary Reports
+- Business Analytics Reports
 
 ---
 
@@ -60,16 +61,18 @@ The application allows users to upload sales datasets, analyze business performa
 - Pandas
 - Prophet
 - Scikit-learn
+- ReportLab
 
 ---
 
 ## Frontend
 - React.js
 - Tailwind CSS
-- Recharts
 - Axios
+- Recharts
 - Framer Motion
 - React Hot Toast
+- React Loading Skeleton
 
 ---
 
@@ -88,6 +91,11 @@ AI-Demand-Forecasting/
 │   │   ├── database.py
 │   │   └── main.py
 │   │
+<<<<<<< HEAD
+=======
+│   ├── reports/
+│   ├── uploads/
+>>>>>>> 3a51d9d (Final project updates)
 │   ├── requirements.txt
 │   └── .env
 │
@@ -97,19 +105,28 @@ AI-Demand-Forecasting/
 │   │   ├── components/
 │   │   ├── layouts/
 │   │   ├── pages/
+<<<<<<< HEAD
 │   │   ├── assets/
 │   │   └── main.jsx
+=======
+│   │   └── assets/
+>>>>>>> 3a51d9d (Final project updates)
 │   │
 │   ├── package.json
 │   └── vite.config.js
 │
+<<<<<<< HEAD
+=======
+├── screenshots/
+│
+>>>>>>> 3a51d9d (Final project updates)
 ├── .gitignore
 │
 └── README.md
 ```
 ---
 
-# Installation
+# Installation Guide
 
 ## Backend Setup
 
@@ -119,6 +136,12 @@ cd backend
 pip install -r requirements.txt
 
 uvicorn app.main:app --reload
+```
+
+Backend will run on:
+
+```bash
+http://127.0.0.1:8000
 ```
 
 ---
@@ -131,6 +154,12 @@ cd frontend
 npm install
 
 npm run dev
+```
+
+Frontend will run on:
+
+```bash
+http://localhost:5173
 ```
 
 ---
@@ -151,24 +180,33 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ---
 
-# Forecasting Workflow
+# AI Forecasting Workflow
 
 1. Upload historical sales dataset
-2. Data preprocessing using Pandas
-3. Prophet model training
-4. Future demand prediction generation
+2. Dataset preprocessing using Pandas
+3. Time-series model training using Prophet
+4. Future revenue prediction generation
 5. Forecast visualization and analytics
-6. Report generation
+6. PDF/Excel report generation
 
 ---
 
-# AI Forecasting Features
+# Forecasting Features
 
-- Time-series forecasting
-- Monthly revenue prediction
-- Product-level forecasting
-- Category-level forecasting
-- Forecast error evaluation using MAPE
+- Monthly Revenue Forecasting
+- Product-wise Forecasting
+- Category-wise Forecasting
+- Future Demand Prediction
+- Forecast Error Evaluation (MAPE)
+
+---
+
+# Security Features
+
+- JWT Authentication
+- Protected Frontend Routes
+- Secure API Access
+- Environment Variable Configuration
 
 ---
 
@@ -176,15 +214,28 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 - XGBoost Forecasting
 - LSTM Forecasting
-- Real-time Analytics
-- Multi-user Roles
-- Advanced BI Reporting
+- Real-Time Analytics
+- Role-Based Access Control
 - Cloud Deployment
+- Advanced BI Reports
 
 ---
 
 # Author
 
 ## Syed Mahammad Shareef
+<<<<<<< HEAD
 
 - Python Developer
+=======
+- Python Developer
+
+### Skills
+- Data Analytics
+- FastAPI
+- React.js
+- Machine Learning
+- Forecasting Systems
+- Power BI
+- Full-Stack Development
+>>>>>>> 3a51d9d (Final project updates)
