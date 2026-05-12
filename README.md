@@ -109,8 +109,6 @@ AI-Demand-Forecasting/
 │   ├── package.json
 │   └── vite.config.js
 │
-├── screenshots/
-│
 ├── .gitignore
 │
 └── README.md
@@ -199,28 +197,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 - Protected Frontend Routes
 - Secure API Access
 - Environment Variable Configuration
-
----
-
-# Screenshots
-
-## Dashboard
-<img width="100%" alt="Dashboard" src="screenshots/dashboard.png">
-
----
-
-## Forecast Page
-<img width="100%" alt="Forecast" src="screenshots/forecast.png">
-
----
-
-## Reports Module
-<img width="100%" alt="Reports" src="screenshots/reports.png">
-
----
-
-## Swagger API
-<img width="100%" alt="Swagger" src="screenshots/swagger.png">
 
 ---
 
