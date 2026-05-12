@@ -74,21 +74,39 @@ The application allows users to upload sales datasets, analyze business performa
 ---
 
 # Project Structure
-
-```bash
+```
 AI-Demand-Forecasting/
 
 ├── backend/
 │   ├── app/
+│   │   ├── auth/
+│   │   ├── models/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   └── main.py
+│   │
 │   ├── requirements.txt
+│   └── .env
 │
 ├── frontend/
 │   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── assets/
+│   │   └── main.jsx
+│   │
 │   ├── package.json
+│   └── vite.config.js
+│
+├── .gitignore
 │
 └── README.md
 ```
-
 ---
 
 # Installation
