@@ -215,12 +215,3 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ## Syed Mahammad Sharref
 - Python eveloper
-  
-### Skills
-- Data Analytics
-- FastAPI
-- React.js
-- Machine Learning
-- Forecasting Systems
-- Power BI
-- Full-Stack Development
