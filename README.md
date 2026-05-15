@@ -1,162 +1,209 @@
-# AI Demand Forecasting Platform
+# AI Demand Forecasting Platform 
 
-An AI-powered full-stack business intelligence and demand forecasting platform built using FastAPI, React.js, and Prophet forecasting.
+Advanced AI-powered demand forecasting and business analytics platform built using FastAPI, React.js, Machine Learning, and MySQL.
 
-The platform allows users to upload historical sales datasets, analyze business performance, generate AI-powered future demand predictions, and download forecasting reports through an interactive analytics dashboard.
+---
+
+# Project Overview
+
+The AI Demand Forecasting Platform is an enterprise-level analytics system that helps businesses analyze sales trends, predict future demand, compare forecasting models, and generate business intelligence reports.
+
+The platform provides:
+
+* AI-based future sales prediction
+* Business analytics dashboards
+* Forecast model comparison
+* PDF & Excel report generation
+* Admin management system
+* Notification system
+* Dataset upload & analytics
+* Enterprise-level frontend UI
 
 ---
 
 # Features
 
-## Authentication Module
-- User Registration & Login
-- JWT Authentication
-- Protected Routes
-- Secure Session Management
+## Authentication & Security
 
----
-
-## Dataset Upload Module
-- Upload CSV/Excel Datasets
-- Dataset Validation
-- Missing Value Handling
-- Duplicate Record Cleaning
-- Automated Data Processing
+* JWT Authentication
+* Protected Routes
+* Role-Based Access Control
+* Admin Authorization
+* Secure API Access
 
 ---
 
 ## Analytics Dashboard
-- Total Revenue Analytics
-- Monthly Sales Trends
-- Top Performing Products
-- Interactive Business Charts
-- KPI Analytics Cards
+
+* Revenue KPIs
+* Monthly Revenue Trend
+* Region Analytics
+* Product Analytics
+* Forecast Insights
+* Business Recommendations
 
 ---
 
-## AI Forecasting Module
-- Prophet Time-Series Forecasting
-- Future Revenue Prediction
-- Product-wise Forecasting
-- Category-wise Forecasting
-- Forecast Error Evaluation (MAPE)
+## AI Forecasting
+
+* Prophet Forecasting
+* Linear Regression Forecasting
+* Forecast Comparison
+* MAPE / MAE / RMSE Metrics
+* Future Sales Prediction
+* Forecast History Tracking
 
 ---
 
-## Reports Module
-- PDF Report Generation
-- Excel Report Export
-- Forecast Summary Reports
-- Business Analytics Reports
+## Dataset Management
+
+* CSV Upload
+* Excel Upload
+* Dataset Validation
+* Dataset Search
+* Pagination APIs
+* Upload Failure Notifications
+
+---
+
+## Reports System
+
+* PDF Report Export
+* Excel Report Export
+* Detailed Report View
+* Analytics Summary Reports
+* Forecast Reporting Dashboard
+
+---
+
+## Notifications Module
+
+* Forecast Completion Notifications
+* Dataset Upload Notifications
+* Upload Failure Notifications
+* Report Generation Notifications
+* Notification Dropdown
+
+---
+
+## Admin Panel
+
+* User Management
+* Dataset Management
+* Forecast Monitoring
+* Report Monitoring
+* System Analytics
+* Disable / Enable Users
+* Delete Dataset APIs
 
 ---
 
 # Tech Stack
 
-## Backend
-- FastAPI
-- MySQL
-- SQLAlchemy
-- JWT Authentication
-- Pandas
-- Prophet
-- Scikit-learn
-- ReportLab
+## Frontend
+
+* React.js
+* Tailwind CSS
+* Axios
+* Recharts
+* Framer Motion
+* React Router DOM
+* Lucide React
 
 ---
 
-## Frontend
-- React.js
-- Tailwind CSS
-- Axios
-- Recharts
-- Framer Motion
-- React Hot Toast
-- React Loading Skeleton
+## Backend
+
+* FastAPI
+* SQLAlchemy
+* JWT Authentication
+* Pydantic
+* Uvicorn
+
+---
+
+## Database
+
+* MySQL
+
+---
+
+## Machine Learning
+
+* Prophet
+* Scikit-learn
+* Pandas
+* NumPy
 
 ---
 
 # Project Structure
 
-```bash
-AI-Demand-Forecasting/
+## Backend Structure
 
-├── backend/
-│   ├── app/
-│   │   ├── auth/
-│   │   ├── models/
-│   │   ├── routers/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   ├── config.py
-│   │   ├── database.py
-│   │   └── main.py
-│   │
-│   ├── reports/
-│   ├── uploads/
-│   ├── requirements.txt
-│   └── .env
+```bash
+backend/
 │
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── assets/
-│   │   └── main.jsx
-│   │
-│   ├── package.json
-│   └── vite.config.js
+├── app/
+│   ├── auth/
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   ├── services/
+│   │   └── forecasting/
+│   └── main.py
 │
-├── .gitignore
-│
-└── README.md
+├── uploads/
+├── reports/
+└── requirements.txt
 ```
 
 ---
 
-# Installation Guide
+## Frontend Structure
 
-## Backend Setup
+```bash
+frontend/
+│
+├── src/
+│   ├── api/
+│   ├── components/
+│   ├── layouts/
+│   ├── pages/
+│   └── assets/
+│
+└── package.json
+```
+
+---
+
+# ⚙️ Installation
+
+## 1️ Clone Repository
+
+```bash
+git clone https://github.com/mdshareef786/AI-Demand-Forecasting.git
+```
+
+---
+
+## 2️ Backend Setup
 
 ```bash
 cd backend
 
+python -m venv venv
+
+venv\Scripts\activate
+
 pip install -r requirements.txt
-
-uvicorn app.main:app --reload
-```
-
-Backend will run on:
-
-```bash
-http://127.0.0.1:8000
 ```
 
 ---
 
-## Frontend Setup
+## 3️ Configure Environment Variables
 
-```bash
-cd frontend
-
-npm install
-
-npm run dev
-```
-
-Frontend will run on:
-
-```bash
-http://localhost:5173
-```
-
----
-
-# Environment Variables
-
-Create `.env` file inside backend folder:
+Create `.env`
 
 ```env
 DATABASE_URL=mysql+pymysql://root:password@localhost/ai_forecasting
@@ -170,48 +217,72 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 ---
 
-# AI Forecasting Workflow
+## 4️ Run Backend
 
-1. Upload historical sales dataset
-2. Dataset preprocessing using Pandas
-3. Time-series model training using Prophet
-4. Future revenue prediction generation
-5. Forecast visualization and analytics
-6. PDF/Excel report generation
+```bash
+uvicorn app.main:app --reload
+```
 
----
+Backend URL:
 
-# Forecasting Features
+```txt
+http://127.0.0.1:8000
+```
 
-- Monthly Revenue Forecasting
-- Product-wise Forecasting
-- Category-wise Forecasting
-- Future Demand Prediction
-- Forecast Error Evaluation (MAPE)
+Swagger Docs:
 
----
-
-# Security Features
-
-- JWT Authentication
-- Protected Frontend Routes
-- Secure API Access
-- Environment Variable Configuration
+```txt
+http://127.0.0.1:8000/docs
+```
 
 ---
 
-# Future Enhancements
+## 5️ Frontend Setup
 
-- XGBoost Forecasting
-- LSTM Forecasting
-- Real-Time Analytics
-- Role-Based Access Control
-- Cloud Deployment
-- Advanced BI Reports
+```bash
+cd frontend
 
+npm install
+```
+
+---
+
+## 6️ Run Frontend
+
+```bash
+npm run dev
+```
+
+Frontend URL:
+
+```txt
+http://localhost:5173
+```
+---
+
+# Forecast Metrics
+
+The platform evaluates forecasting models using:
+
+* MAPE
+* MAE
+* RMSE
+
+---
+
+# API Modules
+
+* Authentication APIs
+* Dataset APIs
+* Analytics APIs
+* Forecast APIs
+* Reports APIs
+* Notifications APIs
+* Admin APIs
+---
 ---
 
 # Author
 
-## Syed Mahammad Shareef
-#### Python Developer
+### Syed Mahammad Shareef
+##### Python Developer
