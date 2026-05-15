@@ -9,7 +9,8 @@ import {
   TrendingUp,
   Activity,
   BarChart3,
-  Filter
+  Filter,
+  Scale
 } from "lucide-react"
 
 import {
@@ -25,19 +26,32 @@ import {
 
 function Forecast() {
 
-  const [forecastData, setForecastData] = useState([])
+  const [forecastData, setForecastData] =
+    useState([])
 
-  const [forecastError, setForecastError] = useState(0)
+  const [forecastError, setForecastError] =
+    useState(0)
 
-  const [model, setModel] = useState("")
+  const [model, setModel] =
+    useState("")
 
-  const [category, setCategory] = useState("")
+  const [category, setCategory] =
+    useState("")
 
-  const [product, setProduct] = useState("")
+  const [product, setProduct] =
+    useState("")
 
-  const [months, setMonths] = useState(6)
+  const [months, setMonths] =
+    useState(6)
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] =
+    useState(false)
+
+  const [comparisonData, setComparisonData] =
+    useState(null)
+
+  const [compareLoading, setCompareLoading] =
+    useState(false)
 
 
   useEffect(() => {
@@ -47,17 +61,21 @@ function Forecast() {
   }, [])
 
 
+  // ==================================
+  // FETCH FORECAST
+  // ==================================
+
   const fetchForecast = async () => {
 
     try {
 
       setLoading(true)
 
-      const token = localStorage.getItem(
-        "token"
-      )
+      const token =
+        localStorage.getItem("token")
 
-      let url = `/forecast/predict?future_months=${months}`
+      let url =
+        `/forecast/predict?future_months=${months}`
 
       if (category) {
 
@@ -107,6 +125,67 @@ function Forecast() {
     }
   }
 
+
+  // ==================================
+  // COMPARE MODELS
+  // ==================================
+
+  const compareModels = async () => {
+
+    try {
+
+      setCompareLoading(true)
+
+      const token =
+        localStorage.getItem("token")
+
+      let url =
+        `/forecast/compare-models?future_months=${months}`
+
+      if (category) {
+
+        url += `&category=${category}`
+      }
+
+      if (product) {
+
+        url += `&product=${product}`
+      }
+
+      const response = await API.get(
+
+        url,
+
+        {
+
+          headers: {
+
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      setComparisonData(
+        response.data
+      )
+
+    }
+
+    catch (error) {
+
+      console.log(error)
+    }
+
+    finally {
+
+      setCompareLoading(false)
+    }
+  }
+
+
+  // ==================================
+  // KPI CARDS
+  // ==================================
 
   const cards = [
 
@@ -165,13 +244,13 @@ function Forecast() {
 
       <div className="mb-10">
 
-        <h1 className="text-5xl font-bold">
+        <h1 className="text-3xl md:text-5xl font-bold leading-tight">
 
           AI Forecast Intelligence
 
         </h1>
 
-        <p className="text-slate-400 mt-3 text-lg">
+        <p className="text-slate-400 mt-3 text-sm md:text-lg">
 
           Advanced Prophet-based business demand forecasting system
 
@@ -194,14 +273,14 @@ function Forecast() {
           y: 0
         }}
 
-        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl mb-10"
+        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl mb-10"
       >
 
         <div className="flex items-center gap-3 mb-6">
 
           <Filter size={24} />
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-xl md:text-2xl font-bold">
 
             Forecast Filters
 
@@ -210,7 +289,7 @@ function Forecast() {
         </div>
 
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
 
           <input
             type="text"
@@ -219,7 +298,7 @@ function Forecast() {
             onChange={(e) =>
               setCategory(e.target.value)
             }
-            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none"
+            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none w-full"
           />
 
           <input
@@ -229,34 +308,66 @@ function Forecast() {
             onChange={(e) =>
               setProduct(e.target.value)
             }
-            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none"
+            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none w-full"
           />
 
           <select
             value={months}
             onChange={(e) =>
-              setMonths(e.target.value)
+              setMonths(Number(e.target.value))
             }
-            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none"
+            className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 outline-none w-full"
           >
 
-            <option value={3}>3 Months</option>
+            <option value={3}>
+              3 Months
+            </option>
 
-            <option value={6}>6 Months</option>
+            <option value={6}>
+              6 Months
+            </option>
 
-            <option value={12}>12 Months</option>
+            <option value={12}>
+              12 Months
+            </option>
 
           </select>
 
           <button
+
             onClick={fetchForecast}
-            className="bg-blue-600 hover:bg-blue-700 transition rounded-xl font-semibold"
+
+            className="bg-blue-600 hover:bg-blue-700 transition rounded-xl font-semibold py-3 px-4"
           >
 
             {
+
               loading
-                ? "Loading..."
+
+                ? "Generating..."
+
                 : "Generate Forecast"
+            }
+
+          </button>
+
+
+          <button
+
+            onClick={compareModels}
+
+            className="bg-purple-600 hover:bg-purple-700 transition rounded-xl font-semibold py-3 px-4 flex items-center justify-center gap-2"
+          >
+
+            <Scale size={18} />
+
+            {
+
+              compareLoading
+
+                ? "Comparing..."
+
+                : "Compare Models"
             }
 
           </button>
@@ -303,7 +414,7 @@ function Forecast() {
                 ${card.gradient}
 
                 rounded-3xl
-                p-6
+                p-5 md:p-6
 
                 shadow-2xl
                 border
@@ -311,9 +422,9 @@ function Forecast() {
               `}
             >
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-4">
 
-                <div>
+                <div className="flex-1">
 
                   <p className="text-sm opacity-80">
 
@@ -321,7 +432,7 @@ function Forecast() {
 
                   </p>
 
-                  <h2 className="text-3xl font-bold mt-3">
+                  <h2 className="text-2xl md:text-3xl font-bold mt-3 break-words">
 
                     {card.value}
 
@@ -329,7 +440,7 @@ function Forecast() {
 
                 </div>
 
-                <div className="bg-white/20 p-4 rounded-2xl">
+                <div className="bg-white/20 p-4 rounded-2xl shrink-0">
 
                   {card.icon}
 
@@ -362,18 +473,18 @@ function Forecast() {
           duration: 0.5
         }}
 
-        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl mb-10"
+        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl mb-10 overflow-x-auto"
       >
 
         <div className="mb-8">
 
-          <h2 className="text-3xl font-bold">
+          <h2 className="text-2xl md:text-3xl font-bold">
 
             Future Revenue Prediction
 
           </h2>
 
-          <p className="text-slate-400 mt-2">
+          <p className="text-slate-400 mt-2 text-sm md:text-base">
 
             AI-generated forecast trend analysis using Prophet forecasting
 
@@ -417,6 +528,179 @@ function Forecast() {
       </motion.div>
 
 
+      {/* MODEL COMPARISON */}
+
+      {
+
+        comparisonData && (
+
+          <motion.div
+
+            initial={{
+              opacity: 0,
+              y: 40
+            }}
+
+            animate={{
+              opacity: 1,
+              y: 0
+            }}
+
+            className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl mb-10"
+          >
+
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-8">
+
+              <div>
+
+                <h2 className="text-2xl md:text-3xl font-bold">
+
+                  AI Model Comparison
+
+                </h2>
+
+                <p className="text-slate-400 mt-2">
+
+                  Prophet vs Linear Regression performance analysis
+
+                </p>
+
+              </div>
+
+
+              <div className="bg-green-500/20 text-green-400 px-5 py-3 rounded-2xl font-semibold w-fit">
+
+                Best Model:
+                {" "}
+                {comparisonData.best_model}
+
+              </div>
+
+            </div>
+
+
+            <div className="overflow-x-auto">
+
+              <table className="w-full min-w-[700px]">
+
+                <thead>
+
+                  <tr className="border-b border-slate-700">
+
+                    <th className="text-left py-5 text-slate-300">
+
+                      Model
+
+                    </th>
+
+                    <th className="text-left py-5 text-slate-300">
+
+                      MAPE
+
+                    </th>
+
+                    <th className="text-left py-5 text-slate-300">
+
+                      MAE
+
+                    </th>
+
+                    <th className="text-left py-5 text-slate-300">
+
+                      RMSE
+
+                    </th>
+
+                    <th className="text-left py-5 text-slate-300">
+
+                      Recommendation
+
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {
+
+                    comparisonData.comparison.map(
+
+                      (item, index) => (
+
+                        <tr
+                          key={index}
+                          className="border-b border-slate-800"
+                        >
+
+                          <td className="py-5 font-semibold">
+
+                            {item.model}
+
+                          </td>
+
+                          <td className="py-5 text-cyan-400 font-bold">
+
+                            {item.mape}
+
+                          </td>
+
+                          <td className="py-5">
+
+                            {item.mae}
+
+                          </td>
+
+                          <td className="py-5">
+
+                            {item.rmse}
+
+                          </td>
+
+                          <td className="py-5">
+
+                            {
+
+                              item.model === comparisonData.best_model
+
+                                ? (
+
+                                  <span className="bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm">
+
+                                    Recommended
+
+                                  </span>
+                                )
+
+                                : (
+
+                                  <span className="bg-slate-700 text-slate-300 px-4 py-2 rounded-full text-sm">
+
+                                    Alternative
+
+                                  </span>
+                                )
+                            }
+
+                          </td>
+
+                        </tr>
+                      )
+                    )
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </motion.div>
+        )
+      }
+
+
       {/* AI INSIGHTS */}
 
       <motion.div
@@ -435,10 +719,10 @@ function Forecast() {
           duration: 0.6
         }}
 
-        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl mb-10"
+        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl mb-10"
       >
 
-        <h2 className="text-3xl font-bold mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8">
 
           AI Forecast Insights
 
@@ -449,13 +733,13 @@ function Forecast() {
 
           <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-6">
 
-            <h3 className="text-xl font-semibold mb-3">
+            <h3 className="text-lg md:text-xl font-semibold mb-3">
 
               Trend Analysis
 
             </h3>
 
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-slate-400 leading-relaxed text-sm md:text-base">
 
               Prophet model identified long-term sales growth and seasonal demand patterns.
 
@@ -466,13 +750,13 @@ function Forecast() {
 
           <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-6">
 
-            <h3 className="text-xl font-semibold mb-3">
+            <h3 className="text-lg md:text-xl font-semibold mb-3">
 
               Forecast Quality
 
             </h3>
 
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-slate-400 leading-relaxed text-sm md:text-base">
 
               Current forecast error is {forecastError}% MAPE based on unseen validation data.
 
@@ -483,13 +767,13 @@ function Forecast() {
 
           <div className="bg-slate-800/70 border border-slate-700 rounded-2xl p-6">
 
-            <h3 className="text-xl font-semibold mb-3">
+            <h3 className="text-lg md:text-xl font-semibold mb-3">
 
               Business Recommendation
 
             </h3>
 
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-slate-400 leading-relaxed text-sm md:text-base">
 
               Use forecasting insights to optimize inventory planning and future sales strategy.
 
@@ -520,10 +804,10 @@ function Forecast() {
           duration: 0.7
         }}
 
-        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl"
+        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl overflow-x-auto"
       >
 
-        <h2 className="text-3xl font-bold mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8">
 
           Future Predictions
 
@@ -532,7 +816,7 @@ function Forecast() {
 
         <div className="overflow-x-auto">
 
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
 
             <thead>
 
@@ -579,7 +863,7 @@ function Forecast() {
 
                     <td className="py-5 text-green-400 font-bold">
 
-                      ₹ {item.predicted_revenue}
+                      ₹ {item.predicted_revenue.toLocaleString()}
 
                     </td>
 

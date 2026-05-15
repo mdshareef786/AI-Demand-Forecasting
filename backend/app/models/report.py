@@ -12,9 +12,9 @@ from sqlalchemy.sql import func
 from app.database import Base
 
 
-class Dataset(Base):
+class Report(Base):
 
-    __tablename__ = "datasets"
+    __tablename__ = "reports"
 
     # ==================================
     # PRIMARY KEY
@@ -27,25 +27,10 @@ class Dataset(Base):
     )
 
     # ==================================
-    # DATASET DETAILS
-    # ==================================
-
-    filename = Column(
-        String(255),
-        nullable=False,
-        index=True
-    )
-
-    file_path = Column(
-        String(500),
-        nullable=False
-    )
-
-    # ==================================
     # USER RELATION
     # ==================================
 
-    uploaded_by = Column(
+    user_id = Column(
 
         Integer,
 
@@ -54,6 +39,35 @@ class Dataset(Base):
         nullable=False,
 
         index=True
+    )
+
+    # ==================================
+    # REPORT DETAILS
+    # ==================================
+
+    report_name = Column(
+
+        String(255),
+
+        nullable=False,
+
+        index=True
+    )
+
+    report_type = Column(
+
+        String(100),
+
+        nullable=False,
+
+        index=True
+    )
+
+    file_path = Column(
+
+        String(500),
+
+        nullable=False
     )
 
     # ==================================
@@ -76,17 +90,22 @@ class Dataset(Base):
     __table_args__ = (
 
         Index(
-            "idx_dataset_uploaded_by",
-            "uploaded_by"
+            "idx_report_user_id",
+            "user_id"
         ),
 
         Index(
-            "idx_dataset_created_at",
+            "idx_report_created_at",
             "created_at"
         ),
 
         Index(
-            "idx_dataset_filename",
-            "filename"
+            "idx_report_type",
+            "report_type"
+        ),
+
+        Index(
+            "idx_report_name",
+            "report_name"
         ),
     )

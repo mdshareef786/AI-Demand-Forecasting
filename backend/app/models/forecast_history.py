@@ -2,8 +2,9 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
+    Float,
     DateTime,
-    Boolean,
+    ForeignKey,
     Index
 )
 
@@ -12,9 +13,9 @@ from datetime import datetime
 from app.database import Base
 
 
-class User(Base):
+class ForecastHistory(Base):
 
-    __tablename__ = "users"
+    __tablename__ = "forecast_history"
 
     # ==================================
     # PRIMARY KEY
@@ -27,60 +28,75 @@ class User(Base):
     )
 
     # ==================================
-    # USER DETAILS
+    # USER RELATION
     # ==================================
 
-    name = Column(
+    user_id = Column(
 
-        String(100),
+        Integer,
 
-        nullable=False,
-
-        index=True
-    )
-
-    email = Column(
-
-        String(100),
-
-        unique=True,
+        ForeignKey("users.id"),
 
         nullable=False,
 
         index=True
     )
 
-    password = Column(
+    # ==================================
+    # FORECAST MODEL
+    # ==================================
 
-        String(255),
+    model_used = Column(
 
+        String(50),
+
+        nullable=False,
+
+        index=True
+    )
+
+    # ==================================
+    # FILTERS
+    # ==================================
+
+    category = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    product = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    # ==================================
+    # FORECAST CONFIG
+    # ==================================
+
+    forecast_months = Column(
+        Integer,
         nullable=False
     )
 
     # ==================================
-    # USER ROLE
+    # METRICS
     # ==================================
 
-    role = Column(
-
-        String(20),
-
-        default="user",
-
-        index=True
+    mape = Column(
+        Float,
+        nullable=True
     )
 
-    # ==================================
-    # ACCOUNT STATUS
-    # ==================================
+    mae = Column(
+        Float,
+        nullable=True
+    )
 
-    is_active = Column(
-
-        Boolean,
-
-        default=True,
-
-        index=True
+    rmse = Column(
+        Float,
+        nullable=True
     )
 
     # ==================================
@@ -103,27 +119,27 @@ class User(Base):
     __table_args__ = (
 
         Index(
-            "idx_user_email",
-            "email"
+            "idx_forecast_user_id",
+            "user_id"
         ),
 
         Index(
-            "idx_user_role",
-            "role"
+            "idx_forecast_model",
+            "model_used"
         ),
 
         Index(
-            "idx_user_active",
-            "is_active"
-        ),
-
-        Index(
-            "idx_user_created_at",
+            "idx_forecast_created_at",
             "created_at"
         ),
 
         Index(
-            "idx_user_name",
-            "name"
+            "idx_forecast_category",
+            "category"
+        ),
+
+        Index(
+            "idx_forecast_product",
+            "product"
         ),
     )

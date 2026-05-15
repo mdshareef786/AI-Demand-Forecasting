@@ -5,7 +5,8 @@ import { motion } from "framer-motion"
 import {
   UploadCloud,
   FileSpreadsheet,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from "lucide-react"
 
 import API from "../api/api"
@@ -13,14 +14,22 @@ import API from "../api/api"
 
 function UploadDataset() {
 
-  const [file, setFile] = useState(null)
+  const [file, setFile] =
+    useState(null)
 
-  const [message, setMessage] = useState("")
+  const [message, setMessage] =
+    useState("")
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] =
+    useState(false)
 
-  const [success, setSuccess] = useState(false)
+  const [success, setSuccess] =
+    useState(false)
 
+
+  // ==================================
+  // FILE CHANGE
+  // ==================================
 
   const handleFileChange = (e) => {
 
@@ -31,6 +40,10 @@ function UploadDataset() {
     setMessage("")
   }
 
+
+  // ==================================
+  // UPLOAD DATASET
+  // ==================================
 
   const handleUpload = async () => {
 
@@ -49,11 +62,11 @@ function UploadDataset() {
 
       setMessage("")
 
-      const token = localStorage.getItem(
-        "token"
-      )
+      const token =
+        localStorage.getItem("token")
 
-      const formData = new FormData()
+      const formData =
+        new FormData()
 
       formData.append(
         "file",
@@ -70,7 +83,8 @@ function UploadDataset() {
 
           headers: {
 
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
 
             "Content-Type":
               "multipart/form-data"
@@ -108,17 +122,18 @@ function UploadDataset() {
 
     <div className="min-h-screen text-white">
 
+
       {/* HEADER */}
 
       <div className="mb-10">
 
-        <h1 className="text-5xl font-bold">
+        <h1 className="text-3xl md:text-5xl font-bold leading-tight">
 
           Upload Dataset
 
         </h1>
 
-        <p className="text-slate-400 mt-3 text-lg">
+        <p className="text-slate-400 mt-3 text-sm md:text-lg">
 
           Upload CSV or Excel files for AI-powered demand forecasting
 
@@ -145,8 +160,9 @@ function UploadDataset() {
           duration: 0.5
         }}
 
-        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-10 shadow-2xl max-w-3xl"
+        className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-5 md:p-10 shadow-2xl w-full max-w-4xl"
       >
+
 
         {/* UPLOAD AREA */}
 
@@ -156,7 +172,7 @@ function UploadDataset() {
             scale: 1.01
           }}
 
-          className="border-2 border-dashed border-slate-700 hover:border-blue-500 transition rounded-3xl p-14 flex flex-col items-center justify-center text-center cursor-pointer bg-slate-950/50"
+          className="border-2 border-dashed border-slate-700 hover:border-blue-500 transition rounded-3xl p-8 md:p-14 flex flex-col items-center justify-center text-center cursor-pointer bg-slate-950/50"
         >
 
           <input
@@ -168,21 +184,38 @@ function UploadDataset() {
 
 
           <UploadCloud
-            size={70}
+            size={60}
             className="text-blue-400 mb-6"
           />
 
-          <h2 className="text-2xl font-bold mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">
 
             Drag & Drop Dataset
 
           </h2>
 
-          <p className="text-slate-400">
+          <p className="text-slate-400 text-sm md:text-base leading-relaxed">
 
-            Upload CSV or Excel files for analytics and forecasting
+            Upload CSV or Excel files for analytics,
+            AI forecasting, and business intelligence insights.
 
           </p>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+
+            <span className="bg-slate-800 px-4 py-2 rounded-full text-sm text-slate-300">
+
+              CSV Supported
+
+            </span>
+
+            <span className="bg-slate-800 px-4 py-2 rounded-full text-sm text-slate-300">
+
+              XLSX Supported
+
+            </span>
+
+          </div>
 
         </motion.label>
 
@@ -205,19 +238,19 @@ function UploadDataset() {
                 y: 0
               }}
 
-              className="mt-8 bg-slate-800/70 border border-slate-700 rounded-2xl p-5 flex items-center justify-between"
+              className="mt-8 bg-slate-800/70 border border-slate-700 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
 
               <div className="flex items-center gap-4">
 
                 <FileSpreadsheet
                   size={40}
-                  className="text-green-400"
+                  className="text-green-400 shrink-0"
                 />
 
                 <div>
 
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold text-base md:text-lg break-all">
 
                     {file.name}
 
@@ -230,6 +263,19 @@ function UploadDataset() {
                   </p>
 
                 </div>
+
+              </div>
+
+
+              <div className="text-sm text-slate-400">
+
+                {
+
+                  (
+                    file.size / 1024 / 1024
+                  ).toFixed(2)
+
+                } MB
 
               </div>
 
@@ -252,12 +298,17 @@ function UploadDataset() {
 
           onClick={handleUpload}
 
-          className="w-full mt-8 bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl text-lg font-semibold transition shadow-lg shadow-blue-500/20"
+          disabled={loading}
+
+          className="w-full mt-8 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 py-4 rounded-2xl text-base md:text-lg font-semibold transition shadow-lg shadow-blue-500/20"
         >
 
           {
+
             loading
+
               ? "Uploading Dataset..."
+
               : "Upload Dataset"
           }
 
@@ -284,8 +335,8 @@ function UploadDataset() {
 
                 mt-6
                 rounded-2xl
-                p-5
-                flex items-center gap-4
+                p-4 md:p-5
+                flex items-start gap-4
 
                 ${success
 
@@ -299,13 +350,14 @@ function UploadDataset() {
 
               {
 
-                success && (
+                success
 
-                  <CheckCircle2 size={28} />
-                )
+                  ? <CheckCircle2 size={28} className="shrink-0" />
+
+                  : <AlertCircle size={28} className="shrink-0" />
               }
 
-              <p className="font-medium">
+              <p className="font-medium break-words">
 
                 {message}
 

@@ -9,6 +9,8 @@ from reportlab.platypus import (
     TableStyle
 )
 
+from app.models.report import Report
+
 from reportlab.lib import colors
 
 from reportlab.lib.styles import getSampleStyleSheet
@@ -260,6 +262,25 @@ def export_excel_report(
 
             index=False
         )
+
+    # ============================
+    # SAVE REPORT METADATA
+    # ============================
+
+    report = Report(
+
+        user_id=current_user.id,
+
+        report_name="forecast_report.xlsx",
+
+        report_type="Excel",
+
+        file_path=report_path
+    )
+
+    db.add(report)
+
+    db.commit()
 
     # ============================
     # RETURN FILE
@@ -533,6 +554,26 @@ def export_pdf_report(
 
     doc.build(elements)
 
+
+    # ============================
+    # SAVE REPORT METADATA
+    # ============================
+
+    report = Report(
+
+        user_id=current_user.id,
+
+        report_name="forecast_report.pdf",
+
+        report_type="PDF",
+
+        file_path=pdf_path
+    )
+
+    db.add(report)
+
+    db.commit()
+
     # ============================
     # RETURN FILE
     # ============================
@@ -545,3 +586,95 @@ def export_pdf_report(
 
         media_type="application/pdf"
     )
+
+# ==================================
+# PAGINATED REPORT LIST
+# ==================================
+
+@router.get("/list")
+def get_paginated_reports(
+
+    page: int = 1,
+
+    limit: int = 5,
+
+    db: Session = Depends(get_db),
+
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    # ============================
+    # VALIDATION
+    # ============================
+
+    if page <= 0:
+
+        raise HTTPException(
+
+            status_code=400,
+
+            detail="Page must be greater than 0"
+        )
+
+    if limit <= 0:
+
+        raise HTTPException(
+
+            status_code=400,
+
+            detail="Limit must be greater than 0"
+        )
+
+    # ============================
+    # PAGINATION LOGIC
+    # ============================
+
+    skip = (page - 1) * limit
+
+    reports = db.query(Report).filter(
+
+        Report.user_id == current_user.id
+
+    ).order_by(
+
+        Report.created_at.desc()
+
+    ).offset(skip).limit(limit).all()
+
+    total_reports = db.query(Report).filter(
+
+        Report.user_id == current_user.id
+
+    ).count()
+
+    results = []
+
+    for item in reports:
+
+        results.append({
+
+            "id": item.id,
+
+            "report_name": item.report_name,
+
+            "report_type": item.report_type,
+
+            "created_at": item.created_at
+        })
+
+    # ============================
+    # RETURN RESPONSE
+    # ============================
+
+    return {
+
+        "page": page,
+
+        "limit": limit,
+
+        "total_reports": total_reports,
+
+        "reports": results
+    }

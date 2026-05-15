@@ -9,18 +9,25 @@ from fastapi import (
 
 from sqlalchemy.orm import Session
 
-from prophet import Prophet
-
-from sklearn.metrics import (
-    mean_absolute_percentage_error
-)
-
 from app.database import get_db
 
 from app.models.dataset import Dataset
 from app.models.user import User
+from app.models.forecast_history import ForecastHistory
 
 from app.auth.oauth2 import get_current_user
+
+from app.services.forecasting.prophet_service import (
+    run_prophet_forecast
+)
+
+from app.services.forecasting.linear_regression_service import (
+    run_linear_regression_forecast
+)
+
+from app.services.notification_service import (
+    create_notification
+)
 
 
 router = APIRouter(
@@ -37,6 +44,8 @@ router = APIRouter(
 def predict_future_sales(
 
     future_months: int = 6,
+
+    model: str = "prophet",
 
     category: str = None,
 
@@ -126,13 +135,9 @@ def predict_future_sales(
 
         col_name = col.lower()
 
-        # DATE COLUMN
-
         if "date" in col_name:
 
             date_column = col
-
-        # SALES COLUMN
 
         if (
 
@@ -144,13 +149,9 @@ def predict_future_sales(
 
             sales_column = col
 
-        # CATEGORY COLUMN
-
         if "category" in col_name:
 
             category_column = col
-
-        # PRODUCT COLUMN
 
         if "product" in col_name:
 
@@ -166,90 +167,63 @@ def predict_future_sales(
         )
 
     # ============================
+    # APPLY FILTERS
+    # ============================
+
+    if (
+
+        category
+        and category_column
+        and category.strip() != ""
+    ):
+
+        df = df[
+
+            df[category_column]
+            .astype(str)
+            .str.lower()
+
+            == category.lower()
+        ]
+
+    if (
+
+        product
+        and product_column
+        and product.strip() != ""
+    ):
+
+        df = df[
+
+            df[product_column]
+            .astype(str)
+            .str.lower()
+
+            == product.lower()
+        ]
+
+    if df.empty:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="No matching data found"
+        )
+
+    # ============================
     # PROCESS DATA
     # ============================
 
     try:
 
-        # ============================
-        # APPLY CATEGORY FILTER
-        # ============================
-
-        if (
-
-            category
-            and category_column
-            and category.strip() != ""
-        ):
-
-            df = df[
-
-                df[category_column]
-                .astype(str)
-                .str.lower()
-
-                == category.lower()
-            ]
-
-        # ============================
-        # APPLY PRODUCT FILTER
-        # ============================
-
-        if (
-
-            product
-            and product_column
-            and product.strip() != ""
-        ):
-
-            df = df[
-
-                df[product_column]
-                .astype(str)
-                .str.lower()
-
-                == product.lower()
-            ]
-
-        # Validate filtered data
-
-        if df.empty:
-
-            raise HTTPException(
-
-                status_code=404,
-
-                detail="No matching data found"
-            )
-        
-        if len(df) < 20:
-
-            raise HTTPException(
-
-                status_code=400,
-
-                detail="Not enough filtered data for forecasting"
-            )
-
-        # ============================
-        # CONVERT DATE COLUMN
-        # ============================
-
         df[date_column] = pd.to_datetime(
             df[date_column]
         )
 
-        # ============================
-        # CREATE MONTH COLUMN
-        # ============================
-
         df["month"] = df[
             date_column
         ].dt.to_period("M")
-
-        # ============================
-        # MONTHLY AGGREGATION
-        # ============================
 
         monthly_data = (
 
@@ -258,30 +232,26 @@ def predict_future_sales(
             .reset_index()
         )
 
-        # ============================
-        # VALIDATE DATA SIZE
-        # ============================
-
         if len(monthly_data) < 6:
 
             raise HTTPException(
 
-            status_code=400,
+                status_code=400,
 
-            detail="Minimum 6 months of historical data required"
-        )
+                detail="Minimum 6 months of historical data required"
+            )
 
     except Exception as e:
 
         raise HTTPException(
 
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=500,
 
             detail=f"Error processing dataset: {str(e)}"
         )
 
     # ============================
-    # PREPARE DATA FOR PROPHET
+    # PREPARE DATA
     # ============================
 
     prophet_df = monthly_data.rename(
@@ -294,8 +264,6 @@ def predict_future_sales(
         }
     )
 
-    # Convert Period to Datetime
-
     prophet_df["ds"] = prophet_df["ds"].astype(str)
 
     prophet_df["ds"] = pd.to_datetime(
@@ -303,128 +271,100 @@ def predict_future_sales(
     )
 
     # ============================
-    # TRAIN / TEST SPLIT
+    # RUN FORECAST MODEL
     # ============================
 
-    split_index = int(
-        len(prophet_df) * 0.8
+    if model.lower() == "prophet":
+
+        forecast_response = run_prophet_forecast(
+
+            prophet_df=prophet_df,
+
+            future_months=future_months
+        )
+
+    elif model.lower() == "linear":
+
+        forecast_response = run_linear_regression_forecast(
+
+            prophet_df=prophet_df,
+
+            future_months=future_months
+        )
+
+    else:
+
+        raise HTTPException(
+
+            status_code=400,
+
+            detail="Invalid forecasting model"
+        )
+
+    # ============================
+    # SAVE FORECAST HISTORY
+    # ============================
+
+    history = ForecastHistory(
+
+        user_id=current_user.id,
+
+        model_used=forecast_response[
+            "model"
+        ],
+
+        category=category,
+
+        product=product,
+
+        forecast_months=future_months,
+
+        mape=forecast_response[
+            "forecast_error_mape"
+        ],
+
+        mae=forecast_response[
+            "mae"
+        ],
+
+        rmse=forecast_response[
+            "rmse"
+        ]
     )
 
-    train_df = prophet_df.iloc[
-        :split_index
-    ]
+    db.add(history)
 
-    test_df = prophet_df.iloc[
-        split_index:
-    ]
+    db.commit()
 
     # ============================
-    # TRAIN PROPHET MODEL
+    # CREATE NOTIFICATION
     # ============================
 
-    model = Prophet(
+    create_notification(
 
-        yearly_seasonality=True,
+        db=db,
 
-        weekly_seasonality=False,
+        user_id=current_user.id,
 
-        daily_seasonality=False,
+        title="Forecast Generated",
 
-        changepoint_prior_scale=0.05,
-
-        seasonality_mode="multiplicative"
-    )
-
-    model.fit(train_df)
-
-    # ============================
-    # TEST PREDICTIONS
-    # ============================
-
-    test_forecast = model.predict(
-
-        test_df[["ds"]]
-    )
-
-    # ============================
-    # CALCULATE FORECAST ERROR
-    # ============================
-
-    mape = mean_absolute_percentage_error(
-
-        test_df["y"],
-
-        test_forecast["yhat"]
-    )
-
-    forecast_error = round(
-        mape * 100,
-        2
-    )
-
-    # ============================
-    # RETRAIN MODEL ON FULL DATA
-    # ============================
-
-    final_model = Prophet(
-
-        yearly_seasonality=True,
-
-        weekly_seasonality=False,
-
-        daily_seasonality=False,
-
-        changepoint_prior_scale=0.05,
-
-        seasonality_mode="multiplicative"
-    )
-
-    final_model.fit(prophet_df)
-
-    # ============================
-    # CREATE FUTURE DATAFRAME
-    # ============================
-
-    future = final_model.make_future_dataframe(
-
-        periods=future_months,
-
-        freq="MS"
+        message=f"{forecast_response['model']} forecast completed successfully."
     )
 
     # ============================
-    # PREDICT FUTURE
+    # FORMAT FORECAST
     # ============================
 
-    forecast = final_model.predict(
-        future
-    )
+    formatted_forecast = []
 
-    # ============================
-    # FILTER FUTURE ONLY
-    # ============================
+    for item in forecast_response["forecast"]:
 
-    last_training_date = prophet_df["ds"].max()
+        formatted_forecast.append({
 
-    future_forecast = forecast[
-        forecast["ds"] > last_training_date
-    ].head(future_months)
+            "month": item["month"],
 
-    # ============================
-    # BUILD RESPONSE
-    # ============================
-
-    forecast_results = []
-
-    for _, row in future_forecast.iterrows():
-
-        forecast_results.append({
-
-            "month": row["ds"].strftime("%Y-%m"),
-
-            "predicted_revenue": round(
-                float(row["yhat"]),
-                2
+            "predicted_revenue": int(
+                item["predicted_revenue"]
             )
         })
 
@@ -434,15 +374,274 @@ def predict_future_sales(
 
     return {
 
-        "model": "Prophet Forecasting",
+        "model": forecast_response[
+            "model"
+        ],
+
+        "forecast_error_mape": round(
+
+            forecast_response[
+                "forecast_error_mape"
+            ],
+
+            2
+        ),
+
+        "mae": round(
+
+            forecast_response[
+                "mae"
+            ],
+
+            2
+        ),
+
+        "rmse": round(
+
+            forecast_response[
+                "rmse"
+            ],
+
+            2
+        ),
+
+        "forecast_months": future_months,
 
         "category_filter": category,
 
         "product_filter": product,
 
-        "forecast_error_mape": forecast_error,
+        "forecast": formatted_forecast
+    }
 
-        "forecast_months": future_months,
 
-        "forecast": forecast_results
+# ==================================
+# MODEL COMPARISON API
+# ==================================
+
+@router.get("/compare-models")
+def compare_forecasting_models(
+
+    future_months: int = 6,
+
+    category: str = None,
+
+    product: str = None,
+
+    db: Session = Depends(get_db),
+
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    dataset = db.query(Dataset).filter(
+
+        Dataset.uploaded_by == current_user.id
+
+    ).order_by(
+
+        Dataset.created_at.desc()
+
+    ).first()
+
+    if not dataset:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="No dataset found"
+        )
+
+    if dataset.file_path.endswith(".csv"):
+
+        df = pd.read_csv(
+            dataset.file_path
+        )
+
+    else:
+
+        df = pd.read_excel(
+            dataset.file_path
+        )
+
+    date_column = None
+    sales_column = None
+
+    category_column = None
+    product_column = None
+
+    for col in df.columns:
+
+        col_name = col.lower()
+
+        if "date" in col_name:
+
+            date_column = col
+
+        if (
+
+            "sales" in col_name
+            or "revenue" in col_name
+            or "amount" in col_name
+            or "income" in col_name
+        ):
+
+            sales_column = col
+
+        if "category" in col_name:
+
+            category_column = col
+
+        if "product" in col_name:
+
+            product_column = col
+
+    if not date_column or not sales_column:
+
+        raise HTTPException(
+
+            status_code=400,
+
+            detail="Required columns not found"
+        )
+
+    if (
+
+        category
+        and category_column
+    ):
+
+        df = df[
+
+            df[category_column]
+            .astype(str)
+            .str.lower()
+
+            == category.lower()
+        ]
+
+    if (
+
+        product
+        and product_column
+    ):
+
+        df = df[
+
+            df[product_column]
+            .astype(str)
+            .str.lower()
+
+            == product.lower()
+        ]
+
+    df[date_column] = pd.to_datetime(
+        df[date_column]
+    )
+
+    df["month"] = df[
+        date_column
+    ].dt.to_period("M")
+
+    monthly_data = (
+
+        df.groupby("month")[sales_column]
+        .sum()
+        .reset_index()
+    )
+
+    prophet_df = monthly_data.rename(
+
+        columns={
+
+            "month": "ds",
+
+            sales_column: "y"
+        }
+    )
+
+    prophet_df["ds"] = prophet_df["ds"].astype(str)
+
+    prophet_df["ds"] = pd.to_datetime(
+        prophet_df["ds"]
+    )
+
+    prophet_result = run_prophet_forecast(
+
+        prophet_df=prophet_df,
+
+        future_months=future_months
+    )
+
+    linear_result = run_linear_regression_forecast(
+
+        prophet_df=prophet_df,
+
+        future_months=future_months
+    )
+
+    models = [
+
+        prophet_result,
+
+        linear_result
+    ]
+
+    best_model = min(
+
+        models,
+
+        key=lambda x: x[
+            "forecast_error_mape"
+        ]
+    )
+
+    return {
+
+        "best_model": best_model[
+            "model"
+        ],
+
+        "comparison": [
+
+            {
+
+                "model": prophet_result[
+                    "model"
+                ],
+
+                "mape": prophet_result[
+                    "forecast_error_mape"
+                ],
+
+                "mae": prophet_result[
+                    "mae"
+                ],
+
+                "rmse": prophet_result[
+                    "rmse"
+                ]
+            },
+
+            {
+
+                "model": linear_result[
+                    "model"
+                ],
+
+                "mape": linear_result[
+                    "forecast_error_mape"
+                ],
+
+                "mae": linear_result[
+                    "mae"
+                ],
+
+                "rmse": linear_result[
+                    "rmse"
+                ]
+            }
+        ]
     }

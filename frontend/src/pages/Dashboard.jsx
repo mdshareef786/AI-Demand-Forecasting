@@ -6,7 +6,9 @@ import {
   TrendingUp,
   IndianRupee,
   Database,
-  BrainCircuit
+  BrainCircuit,
+  MapPinned,
+  BarChart3
 } from "lucide-react"
 
 import { motion } from "framer-motion"
@@ -22,19 +24,36 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  ResponsiveContainer
+  ResponsiveContainer,
+  BarChart,
+  Bar
 } from "recharts"
+
+import toast from "react-hot-toast"
 
 
 function Dashboard() {
 
-  const [summary, setSummary] = useState(null)
+  const [summary, setSummary] =
+    useState(null)
 
-  const [monthlySales, setMonthlySales] = useState([])
+  const [monthlySales, setMonthlySales] =
+    useState([])
 
-  const [forecast, setForecast] = useState([])
+  const [forecast, setForecast] =
+    useState([])
 
-  const [loading, setLoading] = useState(true)
+  const [regionSales, setRegionSales] =
+    useState([])
+
+  const [topRegions, setTopRegions] =
+    useState([])
+
+  const [kpis, setKpis] =
+    useState(null)
+
+  const [loading, setLoading] =
+    useState(true)
 
 
   useEffect(() => {
@@ -44,22 +63,28 @@ function Dashboard() {
   }, [])
 
 
+  // ==================================
+  // FETCH DASHBOARD DATA
+  // ==================================
+
   const fetchDashboardData = async () => {
 
     try {
 
       setLoading(true)
 
-      const token = localStorage.getItem(
-        "token"
-      )
+      const token =
+        localStorage.getItem("token")
 
       const headers = {
 
         Authorization: `Bearer ${token}`
       }
 
-      // Summary
+
+      // ==================================
+      // SUMMARY
+      // ==================================
 
       const summaryResponse = await API.get(
 
@@ -72,7 +97,10 @@ function Dashboard() {
         summaryResponse.data
       )
 
-      // Monthly Sales
+
+      // ==================================
+      // MONTHLY SALES
+      // ==================================
 
       const salesResponse = await API.get(
 
@@ -82,10 +110,13 @@ function Dashboard() {
       )
 
       setMonthlySales(
-        salesResponse.data
+        salesResponse.data.monthly_sales
       )
 
-      // Forecast
+
+      // ==================================
+      // FORECAST
+      // ==================================
 
       const forecastResponse = await API.get(
 
@@ -98,11 +129,73 @@ function Dashboard() {
         forecastResponse.data.forecast
       )
 
+
+      // ==================================
+      // REGION SALES
+      // ==================================
+
+      const regionResponse = await API.get(
+
+        "/analytics/region-sales",
+
+        { headers }
+      )
+
+      if (
+        regionResponse.data.region_sales
+      ) {
+
+        setRegionSales(
+          regionResponse.data.region_sales
+        )
+      }
+
+
+      // ==================================
+      // TOP REGIONS
+      // ==================================
+
+      const topRegionResponse = await API.get(
+
+        "/analytics/top-regions",
+
+        { headers }
+      )
+
+      if (
+        topRegionResponse.data.top_regions
+      ) {
+
+        setTopRegions(
+          topRegionResponse.data.top_regions
+        )
+      }
+
+
+      // ==================================
+      // KPI ANALYTICS
+      // ==================================
+
+      const kpiResponse = await API.get(
+
+        "/analytics/kpis",
+
+        { headers }
+      )
+
+      setKpis(
+        kpiResponse.data
+      )
+
     }
 
     catch (error) {
 
       console.log(error)
+
+      toast.error(
+        "Failed to load dashboard data"
+      )
     }
 
     finally {
@@ -112,12 +205,16 @@ function Dashboard() {
   }
 
 
+  // ==================================
+  // KPI CARDS
+  // ==================================
+
   const cards = [
 
     {
       title: "Total Revenue",
 
-      value: `₹ ${summary?.total_sales || 0}`,
+      value: `₹ ${kpis?.total_sales || 0}`,
 
       icon: <IndianRupee size={24} />,
 
@@ -156,9 +253,9 @@ function Dashboard() {
     },
 
     {
-      title: "AI Forecast",
+      title: "Highest Sale",
 
-      value: "Active",
+      value: `₹ ${kpis?.highest_sale || 0}`,
 
       icon: <BrainCircuit size={24} />,
 
@@ -172,19 +269,20 @@ function Dashboard() {
 
     <div className="min-h-screen text-white">
 
+
       {/* HEADER */}
 
       <div className="mb-10">
 
-        <h1 className="text-5xl font-bold">
+        <h1 className="text-3xl md:text-5xl font-bold leading-tight">
 
-          AI Analytics Dashboard
+          Enterprise Analytics Dashboard
 
         </h1>
 
-        <p className="text-slate-400 mt-3 text-lg">
+        <p className="text-slate-400 mt-3 text-sm md:text-lg">
 
-          Real-time sales analytics and AI forecasting insights
+          Real-time analytics, forecasting intelligence, and regional business insights
 
         </p>
 
@@ -258,9 +356,9 @@ function Dashboard() {
                   `}
                 >
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-4">
 
-                    <div>
+                    <div className="flex-1">
 
                       <p className="text-sm opacity-80">
 
@@ -268,7 +366,7 @@ function Dashboard() {
 
                       </p>
 
-                      <h2 className="text-3xl font-bold mt-3">
+                      <h2 className="text-2xl md:text-3xl font-bold mt-3 break-words">
 
                         {card.value}
 
@@ -276,7 +374,7 @@ function Dashboard() {
 
                     </div>
 
-                    <div className="bg-white/20 p-4 rounded-2xl">
+                    <div className="bg-white/20 p-4 rounded-2xl shrink-0">
 
                       {card.icon}
 
@@ -295,15 +393,22 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
 
-        {/* SALES CHART */}
 
-        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl">
+        {/* MONTHLY SALES */}
 
-          <h2 className="text-2xl font-bold mb-6">
+        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl">
 
-            Monthly Revenue Trend
+          <div className="flex items-center gap-3 mb-6">
 
-          </h2>
+            <BarChart3 size={24} />
+
+            <h2 className="text-xl md:text-2xl font-bold">
+
+              Monthly Revenue Trend
+
+            </h2>
+
+          </div>
 
           {
 
@@ -327,7 +432,9 @@ function Dashboard() {
                   height={350}
                 >
 
-                  <LineChart data={monthlySales}>
+                  <LineChart
+                    data={monthlySales}
+                  >
 
                     <CartesianGrid
                       strokeDasharray="3 3"
@@ -345,7 +452,7 @@ function Dashboard() {
 
                     <Line
                       type="monotone"
-                      dataKey="revenue"
+                      dataKey="sales"
                       stroke="#3b82f6"
                       strokeWidth={4}
                     />
@@ -359,15 +466,21 @@ function Dashboard() {
         </div>
 
 
-        {/* FORECAST CHART */}
+        {/* FORECAST */}
 
-        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl">
+        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl">
 
-          <h2 className="text-2xl font-bold mb-6">
+          <div className="flex items-center gap-3 mb-6">
 
-            AI Forecast Prediction
+            <BrainCircuit size={24} />
 
-          </h2>
+            <h2 className="text-xl md:text-2xl font-bold">
+
+              AI Forecast Prediction
+
+            </h2>
+
+          </div>
 
           {
 
@@ -425,27 +538,205 @@ function Dashboard() {
       </div>
 
 
-      {/* TOP PRODUCTS */}
+      {/* REGION ANALYTICS */}
 
-      <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
 
-        <div className="flex items-center justify-between mb-8">
 
-          <div>
+        {/* REGION SALES */}
 
-            <h2 className="text-3xl font-bold">
+        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-6 shadow-2xl">
 
-              Top Performing Products
+          <div className="flex items-center gap-3 mb-6">
+
+            <MapPinned size={24} />
+
+            <h2 className="text-xl md:text-2xl font-bold">
+
+              Region Sales Analytics
 
             </h2>
 
-            <p className="text-slate-400 mt-2">
+          </div>
 
-              Highest revenue generating products
+          {
 
-            </p>
+            loading
+
+              ? (
+
+                <Skeleton
+                  height={350}
+                  borderRadius={20}
+                  baseColor="#1e293b"
+                  highlightColor="#334155"
+                />
+
+              )
+
+              : regionSales.length > 0
+
+                ? (
+
+                  <ResponsiveContainer
+                    width="100%"
+                    height={350}
+                  >
+
+                    <BarChart
+                      data={regionSales}
+                    >
+
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="#334155"
+                      />
+
+                      <XAxis
+                        dataKey="region"
+                        stroke="#94a3b8"
+                      />
+
+                      <YAxis stroke="#94a3b8" />
+
+                      <Tooltip />
+
+                      <Bar
+                        dataKey="total_sales"
+                        fill="#8b5cf6"
+                      />
+
+                    </BarChart>
+
+                  </ResponsiveContainer>
+                )
+
+                : (
+
+                  <div className="h-[350px] flex items-center justify-center text-slate-400">
+
+                    Region analytics not available
+
+                  </div>
+                )
+          }
+
+        </div>
+
+
+        {/* TOP REGIONS */}
+
+        <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl">
+
+          <h2 className="text-2xl md:text-3xl font-bold mb-8">
+
+            Top Performing Regions
+
+          </h2>
+
+
+          <div className="space-y-5">
+
+            {
+
+              loading
+
+                ? Array(5).fill(0).map(
+
+                    (_, index) => (
+
+                      <Skeleton
+                        key={index}
+                        height={80}
+                        borderRadius={20}
+                        baseColor="#1e293b"
+                        highlightColor="#334155"
+                      />
+                    )
+                  )
+
+                : topRegions.length > 0
+
+                  ? (
+
+                    topRegions.map((region) => (
+
+                      <motion.div
+                        key={region.region}
+
+                        initial={{
+                          opacity: 0,
+                          y: 20
+                        }}
+
+                        animate={{
+                          opacity: 1,
+                          y: 0
+                        }}
+
+                        className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800/60 border border-slate-700 rounded-2xl px-4 md:px-6 py-5"
+                      >
+
+                        <div>
+
+                          <h3 className="text-lg md:text-xl font-semibold">
+
+                            {region.region}
+
+                          </h3>
+
+                          <p className="text-slate-400 text-sm mt-1">
+
+                            Regional Revenue
+
+                          </p>
+
+                        </div>
+
+                        <div className="text-xl md:text-2xl font-bold text-purple-400">
+
+                          ₹ {region.total_sales}
+
+                        </div>
+
+                      </motion.div>
+                    ))
+                  )
+
+                  : (
+
+                    <p className="text-slate-400">
+
+                      No regional analytics available
+
+                    </p>
+                  )
+            }
 
           </div>
+
+        </div>
+
+      </div>
+
+
+      {/* TOP PRODUCTS */}
+
+      <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 md:p-8 shadow-2xl">
+
+        <div className="mb-8">
+
+          <h2 className="text-2xl md:text-3xl font-bold">
+
+            Top Performing Products
+
+          </h2>
+
+          <p className="text-slate-400 mt-2 text-sm md:text-base">
+
+            Highest revenue generating products
+
+          </p>
 
         </div>
 
@@ -472,55 +763,64 @@ function Dashboard() {
 
               : (
 
-                summary?.top_products &&
+                summary?.top_products
 
-                Object.entries(
-                  summary.top_products
-                ).map(
+                  ? Object.entries(
+                      summary.top_products
+                    ).map(
 
-                  ([product, revenue]) => (
+                      ([product, revenue]) => (
 
-                    <motion.div
-                      key={product}
+                        <motion.div
+                          key={product}
 
-                      initial={{
-                        opacity: 0,
-                        y: 20
-                      }}
+                          initial={{
+                            opacity: 0,
+                            y: 20
+                          }}
 
-                      animate={{
-                        opacity: 1,
-                        y: 0
-                      }}
+                          animate={{
+                            opacity: 1,
+                            y: 0
+                          }}
 
-                      className="flex items-center justify-between bg-slate-800/60 border border-slate-700 rounded-2xl px-6 py-5"
-                    >
+                          className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-800/60 border border-slate-700 rounded-2xl px-4 md:px-6 py-5"
+                        >
 
-                      <div>
+                          <div>
 
-                        <h3 className="text-xl font-semibold">
+                            <h3 className="text-lg md:text-xl font-semibold break-words">
 
-                          {product}
+                              {product}
 
-                        </h3>
+                            </h3>
 
-                        <p className="text-slate-400 text-sm mt-1">
+                            <p className="text-slate-400 text-sm mt-1">
 
-                          Revenue Generated
+                              Revenue Generated
 
-                        </p>
+                            </p>
 
-                      </div>
+                          </div>
 
-                      <div className="text-2xl font-bold text-green-400">
+                          <div className="text-xl md:text-2xl font-bold text-green-400 break-all">
 
-                        ₹ {revenue}
+                            ₹ {revenue}
 
-                      </div>
+                          </div>
 
-                    </motion.div>
+                        </motion.div>
+                      )
+                    )
+
+                  : (
+
+                    <p className="text-slate-400">
+
+                      No product analytics available
+
+                    </p>
                   )
-                )
               )
           }
 
