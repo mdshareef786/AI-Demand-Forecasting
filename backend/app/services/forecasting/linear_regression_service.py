@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import time
 
 from sklearn.linear_model import LinearRegression
 
@@ -17,23 +18,35 @@ def run_linear_regression_forecast(
     future_months=6
 ):
 
-    # ============================
-    # CREATE COPY
-    # ============================
+    start_time = time.time()
+
+    # ==========================
+    # COPY DATA
+    # ==========================
 
     df = prophet_df.copy()
 
-    # ============================
-    # CREATE TIME INDEX
-    # ============================
+    # ==========================
+    # TIME INDEX
+    # ==========================
 
     df["time_index"] = range(
         len(df)
     )
 
-    # ============================
-    # TRAIN / TEST SPLIT
-    # ============================
+    # ==========================
+    # SEASON DETECTION
+    # ==========================
+
+    seasonal_detected = False
+
+    if len(df) >= 12:
+
+        seasonal_detected = True
+
+    # ==========================
+    # TRAIN TEST SPLIT
+    # ==========================
 
     split_index = int(
         len(df) * 0.8
@@ -47,31 +60,31 @@ def run_linear_regression_forecast(
         split_index:
     ]
 
-    # ============================
-    # TRAIN MODEL
-    # ============================
+    # ==========================
+    # MODEL
+    # ==========================
 
     model = LinearRegression()
 
     model.fit(
 
-        train_df[["time_index"]],
+        train_df[
+            ["time_index"]
+        ],
 
         train_df["y"]
     )
 
-    # ============================
-    # TEST PREDICTIONS
-    # ============================
+    # ==========================
+    # VALIDATION
+    # ==========================
 
     predictions = model.predict(
 
-        test_df[["time_index"]]
+        test_df[
+            ["time_index"]
+        ]
     )
-
-    # ============================
-    # CALCULATE METRICS
-    # ============================
 
     mape = mean_absolute_percentage_error(
 
@@ -102,74 +115,165 @@ def run_linear_regression_forecast(
         2
     )
 
-    mae = round(float(mae), 2)
+    prediction_accuracy = round(
 
-    rmse = round(float(rmse), 2)
+        max(
+            0,
 
-    # ============================
-    # FUTURE PREDICTION
-    # ============================
+            100 - forecast_error
+        ),
+
+        2
+    )
+
+    # ==========================
+    # ANOMALY DETECTION
+    # ==========================
+
+    anomaly_detected = False
+
+    mean_value = df["y"].mean()
+
+    std_value = df["y"].std()
+
+    anomalies = df[
+
+        abs(
+            df["y"] -
+            mean_value
+        )
+
+        > (2 * std_value)
+    ]
+
+    if len(anomalies) > 0:
+
+        anomaly_detected = True
+
+    # ==========================
+    # AUTO RETRAIN
+    # ==========================
+
+    model.fit(
+
+        df[
+            ["time_index"]
+        ],
+
+        df["y"]
+    )
+
+    retrained = True
+
+    # ==========================
+    # FUTURE FORECAST
+    # ==========================
 
     future_indices = np.array(
 
         range(
+
             len(df),
-            len(df) + future_months
+
+            len(df)
+            +
+            future_months
         )
 
-    ).reshape(-1, 1)
+    ).reshape(-1,1)
 
     future_predictions = model.predict(
         future_indices
     )
 
-    # ============================
-    # BUILD RESPONSE
-    # ============================
+    # ==========================
+    # BUILD FORECAST
+    # ==========================
 
-    forecast_results = []
+    results = []
 
-    last_date = df["ds"].max()
+    last_date = df[
+        "ds"
+    ].max()
 
     future_dates = pd.date_range(
 
         start=last_date,
 
-        periods=future_months + 1,
+        periods=
+        future_months + 1,
 
         freq="MS"
     )[1:]
 
-    for i in range(future_months):
+    for i in range(
+        future_months
+    ):
 
-        forecast_results.append({
+        results.append({
 
-            "month": future_dates[i]
-            .strftime("%Y-%m"),
+            "month":
 
-            "predicted_revenue": round(
+            future_dates[i]
+
+            .strftime(
+                "%Y-%m"
+            ),
+
+            "predicted_revenue":
+
+            round(
 
                 float(
+
                     future_predictions[i]
+
                 ),
 
                 2
             )
         })
 
-    # ============================
-    # RETURN RESPONSE
-    # ============================
+    execution_time = round(
+
+        time.time()
+
+        -
+
+        start_time,
+
+        2
+    )
 
     return {
 
-        "model": "Linear Regression",
+        "model":
+        "Linear Regression",
 
-        "forecast_error_mape": forecast_error,
+        "forecast_error_mape":
+        forecast_error,
 
-        "mae": mae,
+        "mae":
+        round(float(mae),2),
 
-        "rmse": rmse,
+        "rmse":
+        round(float(rmse),2),
 
-        "forecast": forecast_results
+        "prediction_accuracy":
+        prediction_accuracy,
+
+        "seasonal_detected":
+        seasonal_detected,
+
+        "anomaly_detected":
+        anomaly_detected,
+
+        "retrained":
+        retrained,
+
+        "execution_time":
+        execution_time,
+
+        "forecast":
+        results
     }

@@ -16,9 +16,9 @@ class User(Base):
 
     __tablename__ = "users"
 
-    # ==================================
+    # ==========================
     # PRIMARY KEY
-    # ==================================
+    # ==========================
 
     id = Column(
         Integer,
@@ -26,79 +26,74 @@ class User(Base):
         index=True
     )
 
-    # ==================================
-    # USER DETAILS
-    # ==================================
+    # ==========================
+    # USER INFO
+    # ==========================
 
     name = Column(
-
         String(100),
-
         nullable=False,
-
         index=True
     )
 
     email = Column(
-
         String(100),
-
         unique=True,
+        nullable=False,
+        index=True
+    )
+
+    password = Column(
+        String(255),
+        nullable=False
+    )
+
+    # ==========================
+    # ROLE MANAGEMENT
+    # ==========================
+
+    role = Column(
+
+        String(30),
+
+        default="viewer",
 
         nullable=False,
 
         index=True
     )
 
-    password = Column(
+    """
+    Supported Roles
 
-        String(255),
+    super_admin
+    analyst
+    viewer
+    """
 
-        nullable=False
-    )
-
-    # ==================================
-    # USER ROLE
-    # ==================================
-
-    role = Column(
-
-        String(20),
-
-        default="user",
-
-        index=True
-    )
-
-    # ==================================
+    # ==========================
     # ACCOUNT STATUS
-    # ==================================
+    # ==========================
 
     is_active = Column(
-
         Boolean,
-
         default=True,
-
         index=True
     )
 
-    # ==================================
-    # CREATED DATE
-    # ==================================
+    # ==========================
+    # CREATED TIME
+    # ==========================
 
     created_at = Column(
-
         DateTime,
-
         default=datetime.utcnow,
-
         index=True
     )
 
-    # ==================================
-    # DATABASE INDEX OPTIMIZATION
-    # ==================================
+    # ==========================
+    # INDEX OPTIMIZATION
+    # ==========================
 
     __table_args__ = (
 
@@ -118,7 +113,7 @@ class User(Base):
         ),
 
         Index(
-            "idx_user_created_at",
+            "idx_user_created",
             "created_at"
         ),
 

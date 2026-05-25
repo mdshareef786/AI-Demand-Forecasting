@@ -1,25 +1,34 @@
 import pandas as pd
 import numpy as np
+import time
 
 from prophet import Prophet
 
 from sklearn.metrics import (
+
     mean_absolute_percentage_error,
+
     mean_absolute_error,
+
     mean_squared_error
 )
 
 
 def run_prophet_forecast(
+
     prophet_df,
+
     future_months=6
 ):
 
-    # ============================
-    # TRAIN / TEST SPLIT
-    # ============================
+    start_time = time.time()
+
+    # ==========================
+    # TRAIN / TEST
+    # ==========================
 
     split_index = int(
+
         len(prophet_df) * 0.8
     )
 
@@ -31,9 +40,19 @@ def run_prophet_forecast(
         split_index:
     ]
 
-    # ============================
-    # CREATE MODEL
-    # ============================
+    # ==========================
+    # SEASON DETECTION
+    # ==========================
+
+    seasonal_detected = False
+
+    if len(prophet_df) >= 12:
+
+        seasonal_detected = True
+
+    # ==========================
+    # MODEL
+    # ==========================
 
     model = Prophet(
 
@@ -48,24 +67,20 @@ def run_prophet_forecast(
         seasonality_mode="multiplicative"
     )
 
-    # ============================
-    # TRAIN MODEL
-    # ============================
+    model.fit(
+        train_df
+    )
 
-    model.fit(train_df)
-
-    # ============================
-    # TEST FORECAST
-    # ============================
+    # ==========================
+    # VALIDATION
+    # ==========================
 
     test_forecast = model.predict(
 
-        test_df[["ds"]]
+        test_df[
+            ["ds"]
+        ]
     )
-
-    # ============================
-    # CALCULATE METRICS
-    # ============================
 
     mape = mean_absolute_percentage_error(
 
@@ -96,13 +111,43 @@ def run_prophet_forecast(
         2
     )
 
-    mae = round(float(mae), 2)
+    prediction_accuracy = round(
 
-    rmse = round(float(rmse), 2)
+        max(
+            0,
 
-    # ============================
-    # RETRAIN ON FULL DATA
-    # ============================
+            100 - forecast_error
+        ),
+
+        2
+    )
+
+    # ==========================
+    # ANOMALY DETECTION
+    # ==========================
+
+    anomaly_detected = False
+
+    std = prophet_df["y"].std()
+
+    mean = prophet_df["y"].mean()
+
+    anomalies = prophet_df[
+
+        abs(
+            prophet_df["y"] - mean
+        )
+
+        > (2 * std)
+    ]
+
+    if len(anomalies) > 0:
+
+        anomaly_detected = True
+
+    # ==========================
+    # RETRAIN
+    # ==========================
 
     final_model = Prophet(
 
@@ -117,11 +162,15 @@ def run_prophet_forecast(
         seasonality_mode="multiplicative"
     )
 
-    final_model.fit(prophet_df)
+    final_model.fit(
+        prophet_df
+    )
 
-    # ============================
-    # CREATE FUTURE DATAFRAME
-    # ============================
+    retrained = True
+
+    # ==========================
+    # FUTURE
+    # ==========================
 
     future = final_model.make_future_dataframe(
 
@@ -130,55 +179,86 @@ def run_prophet_forecast(
         freq="MS"
     )
 
-    # ============================
-    # PREDICT FUTURE
-    # ============================
-
     forecast = final_model.predict(
         future
     )
 
-    # ============================
-    # FILTER FUTURE RESULTS
-    # ============================
-
-    last_training_date = prophet_df["ds"].max()
+    last_training = prophet_df[
+        "ds"
+    ].max()
 
     future_forecast = forecast[
-        forecast["ds"] > last_training_date
-    ].head(future_months)
 
-    # ============================
-    # BUILD RESPONSE
-    # ============================
+        forecast["ds"]
 
-    forecast_results = []
+        > last_training
+
+    ].head(
+        future_months
+    )
+
+    results = []
 
     for _, row in future_forecast.iterrows():
 
-        forecast_results.append({
+        results.append({
 
-            "month": row["ds"].strftime("%Y-%m"),
+            "month":
 
-            "predicted_revenue": round(
-                float(row["yhat"]),
+            row["ds"].strftime(
+                "%Y-%m"
+            ),
+
+            "predicted_revenue":
+
+            round(
+
+                float(
+                    row["yhat"]
+                ),
+
                 2
             )
         })
 
-    # ============================
-    # RETURN RESULTS
-    # ============================
+    execution_time = round(
+
+        time.time()
+        -
+        start_time,
+
+        2
+    )
 
     return {
 
-        "model": "Prophet Forecasting",
+        "model":
+        "Prophet Forecasting",
 
-        "forecast_error_mape": forecast_error,
+        "forecast_error_mape":
+        forecast_error,
 
-        "mae": mae,
+        "mae":
+        round(float(mae),2),
 
-        "rmse": rmse,
+        "rmse":
+        round(float(rmse),2),
 
-        "forecast": forecast_results
+        "prediction_accuracy":
+        prediction_accuracy,
+
+        "seasonal_detected":
+        seasonal_detected,
+
+        "anomaly_detected":
+        anomaly_detected,
+
+        "retrained":
+        retrained,
+
+        "execution_time":
+        execution_time,
+
+        "forecast":
+        results
     }

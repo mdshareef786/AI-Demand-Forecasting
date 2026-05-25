@@ -1,16 +1,15 @@
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException,
-    status
+    HTTPException
 )
 
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 
-from app.auth.admin_auth import (
-    get_admin_user
+from app.auth.role_checker import (
+    require_roles
 )
 
 from app.models.user import User
@@ -28,7 +27,7 @@ router = APIRouter(
 
 
 # ==================================
-# ADMIN DASHBOARD SUMMARY
+# DASHBOARD SUMMARY
 # ==================================
 
 @router.get("/dashboard-summary")
@@ -37,7 +36,10 @@ def get_dashboard_summary(
     db: Session = Depends(get_db),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
@@ -48,9 +50,7 @@ def get_dashboard_summary(
     active_users = db.query(
         User
     ).filter(
-
         User.is_active == True
-
     ).count()
 
     total_datasets = db.query(
@@ -67,20 +67,25 @@ def get_dashboard_summary(
 
     return {
 
-        "total_users": total_users,
+        "total_users":
+        total_users,
 
-        "active_users": active_users,
+        "active_users":
+        active_users,
 
-        "total_datasets": total_datasets,
+        "total_datasets":
+        total_datasets,
 
-        "total_forecasts": total_forecasts,
+        "total_forecasts":
+        total_forecasts,
 
-        "total_reports": total_reports
+        "total_reports":
+        total_reports
     }
 
 
 # ==================================
-# GET ALL USERS
+# GET USERS
 # ==================================
 
 @router.get("/users")
@@ -89,63 +94,47 @@ def get_all_users(
     db: Session = Depends(get_db),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
-    users = db.query(User).order_by(
-
+    users = db.query(
+        User
+    ).order_by(
         User.created_at.desc()
-
     ).all()
 
-    results = []
-
-    for item in users:
-
-        results.append({
-
-            "id": item.id,
-
-            "name": item.name,
-
-            "email": item.email,
-
-            "role": item.role,
-
-            "is_active": item.is_active,
-
-            "created_at": item.created_at
-        })
-
-    return {
-
-        "total_users": len(results),
-
-        "users": results
-    }
+    return users
 
 
 # ==================================
 # DISABLE USER
 # ==================================
 
-@router.put("/disable-user/{user_id}")
+@router.put(
+    "/disable-user/{user_id}"
+)
 def disable_user(
 
     user_id: int,
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
     user = db.query(User).filter(
-
         User.id == user_id
-
     ).first()
 
     if not user:
@@ -163,7 +152,8 @@ def disable_user(
 
     return {
 
-        "message": "User disabled successfully"
+        "message":
+        "User disabled"
     }
 
 
@@ -171,22 +161,27 @@ def disable_user(
 # ENABLE USER
 # ==================================
 
-@router.put("/enable-user/{user_id}")
+@router.put(
+    "/enable-user/{user_id}"
+)
 def enable_user(
 
     user_id: int,
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
     user = db.query(User).filter(
-
         User.id == user_id
-
     ).first()
 
     if not user:
@@ -204,7 +199,8 @@ def enable_user(
 
     return {
 
-        "message": "User enabled successfully"
+        "message":
+        "User enabled"
     }
 
 
@@ -212,22 +208,27 @@ def enable_user(
 # DELETE USER
 # ==================================
 
-@router.delete("/delete-user/{user_id}")
+@router.delete(
+    "/delete-user/{user_id}"
+)
 def delete_user(
 
     user_id: int,
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
     user = db.query(User).filter(
-
         User.id == user_id
-
     ).first()
 
     if not user:
@@ -245,76 +246,66 @@ def delete_user(
 
     return {
 
-        "message": "User deleted successfully"
+        "message":
+        "User deleted"
     }
 
 
 # ==================================
-# ALL DATASETS
+# DATASETS
 # ==================================
 
 @router.get("/datasets")
 def get_all_datasets(
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
     datasets = db.query(
         Dataset
-    ).order_by(
-
-        Dataset.created_at.desc()
-
     ).all()
 
-    results = []
-
-    for item in datasets:
-
-        results.append({
-
-            "id": item.id,
-
-            "filename": item.filename,
-
-            "file_path": item.file_path,
-
-            "uploaded_by": item.uploaded_by,
-
-            "created_at": item.created_at
-        })
-
-    return {
-
-        "total_datasets": len(results),
-
-        "datasets": results
-    }
+    return datasets
 
 
 # ==================================
 # DELETE DATASET
 # ==================================
 
-@router.delete("/delete-dataset/{dataset_id}")
+@router.delete(
+    "/delete-dataset/{dataset_id}"
+)
 def delete_dataset(
 
     dataset_id: int,
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
-    dataset = db.query(Dataset).filter(
+    dataset = db.query(
+        Dataset
+    ).filter(
 
-        Dataset.id == dataset_id
+        Dataset.id ==
+        dataset_id
 
     ).first()
 
@@ -324,7 +315,8 @@ def delete_dataset(
 
             status_code=404,
 
-            detail="Dataset not found"
+            detail=
+            "Dataset not found"
         )
 
     db.delete(dataset)
@@ -333,7 +325,8 @@ def delete_dataset(
 
     return {
 
-        "message": "Dataset deleted successfully"
+        "message":
+        "Dataset deleted"
     }
 
 
@@ -341,159 +334,98 @@ def delete_dataset(
 # FORECAST ACTIVITIES
 # ==================================
 
-@router.get("/forecast-activities")
-def get_forecast_activities(
+@router.get(
+    "/forecast-activities"
+)
+def forecast_activities(
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
-    forecasts = db.query(
-
+    data = db.query(
         ForecastHistory
-
     ).order_by(
 
         ForecastHistory.created_at.desc()
 
     ).limit(20).all()
 
-    results = []
-
-    for item in forecasts:
-
-        results.append({
-
-            "user_id": item.user_id,
-
-            "model_used": item.model_used,
-
-            "category": item.category,
-
-            "product": item.product,
-
-            "forecast_months": item.forecast_months,
-
-            "mape": item.mape,
-
-            "mae": item.mae,
-
-            "rmse": item.rmse,
-
-            "created_at": item.created_at
-        })
-
-    return {
-
-        "forecast_activities": results
-    }
+    return data
 
 
 # ==================================
-# ALL REPORTS
+# REPORTS
 # ==================================
 
 @router.get("/reports")
-def get_all_reports(
+def reports(
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
     reports = db.query(
         Report
-    ).order_by(
-
-        Report.created_at.desc()
-
     ).all()
 
-    results = []
-
-    for item in reports:
-
-        results.append({
-
-            "id": item.id,
-
-            "report_name": item.report_name,
-
-            "report_type": item.report_type,
-
-            "created_at": item.created_at
-        })
-
-    return {
-
-        "total_reports": len(results),
-
-        "reports": results
-    }
+    return reports
 
 
 # ==================================
 # SYSTEM ANALYTICS
 # ==================================
 
-@router.get("/system-analytics")
-def get_system_analytics(
+@router.get(
+    "/system-analytics"
+)
+def system_analytics(
 
-    db: Session = Depends(get_db),
+    db: Session = Depends(
+        get_db
+    ),
 
     admin_user: User = Depends(
-        get_admin_user
+
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
 
-    total_users = db.query(
-        User
-    ).count()
-
-    active_users = db.query(
-        User
-    ).filter(
-
-        User.is_active == True
-
-    ).count()
-
-    inactive_users = db.query(
-        User
-    ).filter(
-
-        User.is_active == False
-
-    ).count()
-
-    total_datasets = db.query(
-        Dataset
-    ).count()
-
-    total_forecasts = db.query(
-        ForecastHistory
-    ).count()
-
-    total_reports = db.query(
-        Report
-    ).count()
-
     return {
 
-        "total_users": total_users,
+        "users":
+        db.query(User).count(),
 
-        "active_users": active_users,
+        "datasets":
+        db.query(
+            Dataset
+        ).count(),
 
-        "inactive_users": inactive_users,
+        "forecasts":
+        db.query(
+            ForecastHistory
+        ).count(),
 
-        "total_datasets": total_datasets,
-
-        "total_forecasts": total_forecasts,
-
-        "total_reports": total_reports
+        "reports":
+        db.query(
+            Report
+        ).count()
     }

@@ -5,53 +5,54 @@ function ProtectedRoute({
 
   children,
 
-  adminOnly = false
+  allowedRoles = []
 }) {
-
-  // ==================================
-  // TOKEN
-  // ==================================
 
   const token = localStorage.getItem(
     "token"
   )
 
-  // ==================================
-  // USER ROLE
-  // ==================================
-
-  const userRole = localStorage.getItem(
+  const role = localStorage.getItem(
     "role"
   )
 
-  // ==================================
+
+  // ==========================
   // NOT LOGGED IN
-  // ==================================
+  // ==========================
 
   if (!token) {
 
     return <Navigate to="/" />
   }
 
-  // ==================================
-  // ADMIN ROUTE PROTECTION
-  // ==================================
+
+  // ==========================
+  // ROLE CHECK
+  // ==========================
 
   if (
 
-    adminOnly
+    allowedRoles.length > 0
 
     &&
 
-    userRole !== "admin"
+    !allowedRoles.includes(
+      role
+    )
   ) {
 
-    return <Navigate to="/dashboard" />
+    return (
+      <Navigate
+        to="/dashboard"
+      />
+    )
   }
 
-  // ==================================
-  // ALLOW ACCESS
-  // ==================================
+
+  // ==========================
+  // ACCESS ALLOWED
+  // ==========================
 
   return children
 }

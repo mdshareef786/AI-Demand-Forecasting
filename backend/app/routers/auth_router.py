@@ -6,110 +6,230 @@ from fastapi import (
 )
 
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordRequestForm
+
+from fastapi.security import (
+    OAuth2PasswordRequestForm
+)
 
 from app.database import get_db
+
 from app.models.user import User
-from app.schemas.user_schema import UserCreate
+
+from app.schemas.user_schema import (
+    UserCreate
+)
 
 from app.auth.auth_handler import (
+
     hash_password,
+
     verify_password,
+
     create_access_token
 )
 
 router = APIRouter(
+
     prefix="/auth",
+
     tags=["Authentication"]
 )
 
 
-# =========================
-# REGISTER API
-# =========================
+# ==================================
+# VALID ROLES
+# ==================================
+
+VALID_ROLES = [
+
+    "super_admin",
+
+    "analyst",
+
+    "viewer"
+]
+
+
+# ==================================
+# REGISTER
+# ==================================
 
 @router.post(
+
     "/register",
+
     status_code=status.HTTP_201_CREATED
 )
+
 def register(
+
     user: UserCreate,
+
     db: Session = Depends(get_db)
 ):
 
-    # Check existing user
-    existing_user = db.query(User).filter(
+    # CHECK EMAIL
+
+    existing_user = db.query(
+
+        User
+
+    ).filter(
+
         User.email == user.email
+
     ).first()
 
     if existing_user:
+
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+
+            status_code=400,
+
+            detail="Email already exists"
         )
 
-    # Hash password
+    # ROLE
+
+    role = getattr(
+
+        user,
+
+        "role",
+
+        "viewer"
+    )
+
+    if role not in VALID_ROLES:
+
+        raise HTTPException(
+
+            status_code=400,
+
+            detail="Invalid role"
+        )
+
+    # HASH PASSWORD
+
     hashed_password = hash_password(
+
         user.password
     )
 
-    # Create new user
+    # CREATE USER
+
     new_user = User(
+
         name=user.name,
+
         email=user.email,
-        password=hashed_password
+
+        password=hashed_password,
+
+        role=role
     )
 
-    # Save to database
     db.add(new_user)
+
     db.commit()
+
     db.refresh(new_user)
 
     return {
-        "message": "User registered successfully"
+
+        "message":
+            "User registered successfully",
+
+        "role":
+            new_user.role
     }
 
 
-# =========================
-# LOGIN API
-# =========================
+# ==================================
+# LOGIN
+# ==================================
 
 @router.post("/login")
+
 def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+
+    form_data:
+    OAuth2PasswordRequestForm = Depends(),
+
     db: Session = Depends(get_db)
 ):
 
-    # Find user by email
-    existing_user = db.query(User).filter(
-        User.email == form_data.username
+    existing_user = db.query(
+
+        User
+
+    ).filter(
+
+        User.email ==
+        form_data.username
+
     ).first()
 
-    # Check email
     if not existing_user:
+
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+
+            status_code=401,
+
             detail="Invalid email"
         )
 
-    # Verify password
     if not verify_password(
+
         form_data.password,
+
         existing_user.password
     ):
+
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+
+            status_code=401,
+
             detail="Invalid password"
         )
 
-    # Generate JWT token
+    if not existing_user.is_active:
+
+        raise HTTPException(
+
+            status_code=403,
+
+            detail="Account disabled"
+        )
+
+    # TOKEN
+
     access_token = create_access_token(
+
         data={
-            "sub": existing_user.email
+
+            "sub":
+                existing_user.email,
+
+            "role":
+                existing_user.role,
+
+            "user_id":
+                existing_user.id
         }
     )
 
     return {
-        "access_token": access_token,
-        "token_type": "bearer"
+
+        "access_token":
+            access_token,
+
+        "token_type":
+            "bearer",
+
+        "role":
+            existing_user.role,
+
+        "name":
+            existing_user.name
     }

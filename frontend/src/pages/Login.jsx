@@ -28,6 +28,7 @@ function Login() {
   const [formData, setFormData] = useState({
 
     email: "",
+
     password: ""
   })
 
@@ -44,10 +45,12 @@ function Login() {
 
     if (token) {
 
-      navigate("/dashboard")
+      navigate(
+        "/dashboard"
+      )
     }
 
-  }, [])
+  }, [navigate])
 
 
   const handleChange = (e) => {
@@ -56,7 +59,8 @@ function Login() {
 
       ...formData,
 
-      [e.target.name]: e.target.value
+      [e.target.name]:
+      e.target.value
     })
   }
 
@@ -74,14 +78,19 @@ function Login() {
       const data = new URLSearchParams()
 
       data.append(
+
         "username",
+
         formData.email
       )
 
       data.append(
+
         "password",
+
         formData.password
       )
+
 
       const response = await API.post(
 
@@ -94,10 +103,16 @@ function Login() {
           headers: {
 
             "Content-Type":
-              "application/x-www-form-urlencoded"
+
+            "application/x-www-form-urlencoded"
           }
         }
       )
+
+
+      // ==========================
+      // SAVE LOGIN DATA
+      // ==========================
 
       localStorage.setItem(
 
@@ -106,13 +121,38 @@ function Login() {
         response.data.access_token
       )
 
-      // SUCCESS TOAST
+      localStorage.setItem(
+
+        "role",
+
+        response.data.role
+      )
+
+      localStorage.setItem(
+
+        "user_name",
+
+        response.data.user_name
+      )
+
+
+      // ==========================
+      // SUCCESS MESSAGE
+      // ==========================
 
       toast.success(
+
         "Login successful"
       )
 
-      navigate("/dashboard")
+
+      // ==========================
+      // REDIRECT
+      // ==========================
+
+      navigate(
+        "/dashboard"
+      )
 
     }
 
@@ -121,10 +161,11 @@ function Login() {
       setError(
 
         err.response?.data?.detail
-        || "Login failed"
-      )
 
-      // ERROR TOAST
+        ||
+
+        "Login failed"
+      )
 
       toast.error(
         "Invalid credentials"
@@ -142,7 +183,7 @@ function Login() {
 
     <div className="min-h-screen bg-slate-950 text-white flex">
 
-      {/* LEFT SIDE */}
+      {/* LEFT */}
 
       <div className="hidden lg:flex w-1/2 flex-col justify-center px-20 bg-gradient-to-br from-blue-600 via-indigo-700 to-slate-900">
 
@@ -175,12 +216,11 @@ function Login() {
 
           </div>
 
-          <p className="text-xl text-blue-100 leading-relaxed mb-12">
+          <p className="text-xl text-blue-100 mb-12">
 
-            Intelligent demand forecasting and business analytics platform powered by machine learning.
+            Intelligent demand forecasting platform powered by AI.
 
           </p>
-
 
           <div className="space-y-6">
 
@@ -188,9 +228,9 @@ function Login() {
 
               <TrendingUp size={28} />
 
-              <span className="text-lg">
+              <span>
 
-                Real-time analytics dashboard
+                Real-time analytics
 
               </span>
 
@@ -200,9 +240,9 @@ function Login() {
 
               <BrainCircuit size={28} />
 
-              <span className="text-lg">
+              <span>
 
-                AI-powered future predictions
+                AI predictions
 
               </span>
 
@@ -212,9 +252,9 @@ function Login() {
 
               <ShieldCheck size={28} />
 
-              <span className="text-lg">
+              <span>
 
-                Secure JWT authentication
+                JWT Security
 
               </span>
 
@@ -227,28 +267,11 @@ function Login() {
       </div>
 
 
-      {/* RIGHT SIDE */}
+      {/* RIGHT */}
 
       <div className="flex-1 flex items-center justify-center p-8">
 
-        <motion.div
-
-          initial={{
-            opacity: 0,
-            y: 40
-          }}
-
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-
-          transition={{
-            duration: 0.5
-          }}
-
-          className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl"
-        >
+        <div className="w-full max-w-md bg-white/10 p-10 rounded-3xl">
 
           <h2 className="text-4xl font-bold mb-3">
 
@@ -258,67 +281,55 @@ function Login() {
 
           <p className="text-slate-300 mb-8">
 
-            Login to continue to your dashboard
+            Login to continue
 
           </p>
 
 
           <form
+
             onSubmit={handleSubmit}
+
             className="space-y-5"
           >
 
-            {/* EMAIL */}
+            <input
 
-            <div>
+              type="email"
 
-              <label className="block mb-2 text-sm text-slate-300">
+              name="email"
 
-                Email Address
+              placeholder="Email"
 
-              </label>
+              onChange={handleChange}
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                onChange={handleChange}
-                required
-                className="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              required
 
-            </div>
+              className="w-full p-4 rounded-xl bg-slate-900"
+            />
 
 
-            {/* PASSWORD */}
+            <input
 
-            <div>
+              type="password"
 
-              <label className="block mb-2 text-sm text-slate-300">
+              name="password"
 
-                Password
+              placeholder="Password"
 
-              </label>
+              onChange={handleChange}
 
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                onChange={handleChange}
-                required
-                className="w-full bg-slate-900/70 border border-slate-700 rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              required
 
-            </div>
+              className="w-full p-4 rounded-xl bg-slate-900"
+            />
 
-
-            {/* ERROR */}
 
             {
 
               error && (
 
-                <p className="text-red-400 text-sm">
+                <p className="text-red-400">
 
                   {error}
 
@@ -327,18 +338,26 @@ function Login() {
             }
 
 
-            {/* BUTTON */}
-
             <button
+
               type="submit"
+
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-semibold text-lg transition disabled:opacity-50"
+
+              className="w-full bg-blue-600 py-4 rounded-xl"
             >
 
               {
+
                 loading
-                  ? "Logging in..."
-                  : "Login"
+
+                ?
+
+                "Logging in..."
+
+                :
+
+                "Login"
               }
 
             </button>
@@ -346,17 +365,17 @@ function Login() {
           </form>
 
 
-          {/* REGISTER */}
+          <p className="text-center mt-8">
 
-          <p className="text-center mt-8 text-slate-400">
-
-            Don’t have an account?
+            No account?
 
             {" "}
 
             <Link
+
               to="/register"
-              className="text-blue-400 font-semibold hover:underline"
+
+              className="text-blue-400"
             >
 
               Register
@@ -365,7 +384,7 @@ function Login() {
 
           </p>
 
-        </motion.div>
+        </div>
 
       </div>
 

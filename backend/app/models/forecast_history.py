@@ -5,6 +5,7 @@ from sqlalchemy import (
     Float,
     DateTime,
     ForeignKey,
+    Boolean,
     Index
 )
 
@@ -17,9 +18,9 @@ class ForecastHistory(Base):
 
     __tablename__ = "forecast_history"
 
-    # ==================================
+    # ==========================
     # PRIMARY KEY
-    # ==================================
+    # ==========================
 
     id = Column(
         Integer,
@@ -27,24 +28,26 @@ class ForecastHistory(Base):
         index=True
     )
 
-    # ==================================
+    # ==========================
     # USER RELATION
-    # ==================================
+    # ==========================
 
     user_id = Column(
 
         Integer,
 
-        ForeignKey("users.id"),
+        ForeignKey(
+            "users.id"
+        ),
 
         nullable=False,
 
         index=True
     )
 
-    # ==================================
-    # FORECAST MODEL
-    # ==================================
+    # ==========================
+    # MODEL INFO
+    # ==========================
 
     model_used = Column(
 
@@ -55,9 +58,18 @@ class ForecastHistory(Base):
         index=True
     )
 
-    # ==================================
+    best_model = Column(
+
+        Boolean,
+
+        default=False,
+
+        index=True
+    )
+
+    # ==========================
     # FILTERS
-    # ==================================
+    # ==========================
 
     category = Column(
         String(100),
@@ -71,18 +83,39 @@ class ForecastHistory(Base):
         index=True
     )
 
-    # ==================================
+    region = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    # ==========================
     # FORECAST CONFIG
-    # ==================================
+    # ==========================
 
     forecast_months = Column(
         Integer,
         nullable=False
     )
 
-    # ==================================
+    retrained = Column(
+        Boolean,
+        default=False
+    )
+
+    seasonal_detected = Column(
+        Boolean,
+        default=False
+    )
+
+    anomaly_detected = Column(
+        Boolean,
+        default=False
+    )
+
+    # ==========================
     # METRICS
-    # ==================================
+    # ==========================
 
     mape = Column(
         Float,
@@ -99,9 +132,41 @@ class ForecastHistory(Base):
         nullable=True
     )
 
-    # ==================================
-    # CREATED DATE
-    # ==================================
+    prediction_accuracy = Column(
+        Float,
+        nullable=True
+    )
+
+    execution_time = Column(
+        Float,
+        nullable=True
+    )
+
+    # ==========================
+    # ACTIVITY LOGGING
+    # ==========================
+
+    api_name = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    activity_type = Column(
+        String(100),
+        nullable=True,
+        index=True
+    )
+
+    status = Column(
+        String(50),
+        default="success",
+        index=True
+    )
+
+    # ==========================
+    # CREATED TIME
+    # ==========================
 
     created_at = Column(
 
@@ -112,34 +177,37 @@ class ForecastHistory(Base):
         index=True
     )
 
-    # ==================================
-    # DATABASE INDEX OPTIMIZATION
-    # ==================================
+    # ==========================
+    # INDEX OPTIMIZATION
+    # ==========================
 
     __table_args__ = (
 
-        Index(
-            "idx_forecast_user_id",
-            "user_id"
-        ),
+    Index(
 
-        Index(
-            "idx_forecast_model",
-            "model_used"
-        ),
+        "idx_forecast_user_model",
 
-        Index(
-            "idx_forecast_created_at",
-            "created_at"
-        ),
+        "user_id",
 
-        Index(
-            "idx_forecast_category",
-            "category"
-        ),
+        "model_used"
+    ),
 
-        Index(
-            "idx_forecast_product",
-            "product"
-        ),
-    )
+    Index(
+
+        "idx_forecast_region_category",
+
+        "region",
+
+        "category"
+    ),
+
+    Index(
+
+        "idx_forecast_created_status",
+
+        "created_at",
+
+        "status"
+    ),
+
+)

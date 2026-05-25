@@ -5,19 +5,13 @@ import {
 } from "react-router-dom"
 
 import Login from "./pages/Login"
-
 import Register from "./pages/Register"
 
 import Dashboard from "./pages/Dashboard"
-
 import UploadDataset from "./pages/UploadDataset"
-
 import Forecast from "./pages/Forecast"
-
 import Reports from "./pages/Reports"
-
 import ReportDetails from "./pages/ReportDetails"
-
 import AdminDashboard from "./pages/AdminDashboard"
 
 import MainLayout from "./layouts/MainLayout"
@@ -33,9 +27,9 @@ function App() {
 
       <Routes>
 
-        {/* ================================== */}
+        {/* ========================= */}
         {/* PUBLIC ROUTES */}
-        {/* ================================== */}
+        {/* ========================= */}
 
         <Route
           path="/"
@@ -48,9 +42,9 @@ function App() {
         />
 
 
-        {/* ================================== */}
-        {/* PROTECTED ROUTES */}
-        {/* ================================== */}
+        {/* ========================= */}
+        {/* PROTECTED LAYOUT */}
+        {/* ========================= */}
 
         <Route
 
@@ -61,50 +55,147 @@ function App() {
               <MainLayout />
 
             </ProtectedRoute>
+
           }
         >
 
           {/* DASHBOARD */}
 
           <Route
+
             path="/dashboard"
-            element={<Dashboard />}
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst",
+
+                  "viewer"
+
+                ]}
+              >
+
+                <Dashboard />
+
+              </ProtectedRoute>
+            }
           />
 
 
           {/* DATASET */}
 
           <Route
+
             path="/upload"
-            element={<UploadDataset />}
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst"
+
+                ]}
+              >
+
+                <UploadDataset />
+
+              </ProtectedRoute>
+            }
           />
 
 
           {/* FORECAST */}
 
           <Route
+
             path="/forecast"
-            element={<Forecast />}
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst"
+
+                ]}
+              >
+
+                <Forecast />
+
+              </ProtectedRoute>
+            }
           />
 
 
           {/* REPORTS */}
 
           <Route
+
             path="/reports"
-            element={<Reports />}
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst",
+
+                  "viewer"
+
+                ]}
+              >
+
+                <Reports />
+
+              </ProtectedRoute>
+            }
           />
 
 
           {/* REPORT DETAILS */}
 
           <Route
+
             path="/report-details"
-            element={<ReportDetails />}
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst",
+
+                  "viewer"
+
+                ]}
+              >
+
+                <ReportDetails />
+
+              </ProtectedRoute>
+            }
           />
 
 
-          {/* ADMIN PANEL */}
+          {/* ADMIN */}
 
           <Route
 
@@ -112,7 +203,14 @@ function App() {
 
             element={
 
-              <ProtectedRoute adminOnly={true}>
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin"
+
+                ]}
+              >
 
                 <AdminDashboard />
 
@@ -125,6 +223,7 @@ function App() {
       </Routes>
 
     </BrowserRouter>
+
   )
 }
 

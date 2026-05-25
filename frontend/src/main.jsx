@@ -6,21 +6,27 @@ import App from "./App"
 
 import "./index.css"
 
-import { Toaster } from "react-hot-toast"
-
+import {
+ThemeProvider
+}
+from "./context/ThemeContext"
 
 ReactDOM.createRoot(
-  document.getElementById("root")
+
+document.getElementById(
+"root"
+)
+
 ).render(
 
-  <React.StrictMode>
+<React.StrictMode>
 
-    <Toaster
-      position="top-right"
-      reverseOrder={false}
-    />
+<ThemeProvider>
 
-    <App />
+<App />
 
-  </React.StrictMode>
+</ThemeProvider>
+
+</React.StrictMode>
+
 )

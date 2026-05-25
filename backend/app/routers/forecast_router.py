@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 
 from fastapi import (
     APIRouter,
@@ -26,9 +27,16 @@ from app.services.forecasting.linear_regression_service import (
 )
 
 from app.services.notification_service import (
-    create_notification
+    create_forecast_notification
 )
 
+from app.services.activity_service import (
+    create_activity_log
+)
+
+from app.auth.role_checker import (
+    require_roles
+)
 
 router = APIRouter(
     prefix="/forecast",
@@ -54,9 +62,24 @@ def predict_future_sales(
     db: Session = Depends(get_db),
 
     current_user: User = Depends(
-        get_current_user
+
+        require_roles(
+
+            [
+
+                "super_admin",
+
+                "analyst"
+            ]
+        )
     )
 ):
+
+    # ============================
+    # START TIMER
+    # ============================
+
+    start_time = time.time()
 
     # ============================
     # VALIDATE INPUT
@@ -301,6 +324,42 @@ def predict_future_sales(
             detail="Invalid forecasting model"
         )
 
+    
+
+    # ============================
+    # FORMAT FORECAST
+    # ============================
+
+    formatted_forecast = []
+
+    for item in forecast_response["forecast"]:
+
+        formatted_forecast.append({
+
+            "month": item["month"],
+
+            "predicted_revenue": int(
+                item["predicted_revenue"]
+            )
+        })
+
+
+    # ============================
+    # EXECUTION TIME
+    # ============================
+
+    execution_time = round(
+
+        time.time()
+
+        -
+
+        start_time,
+
+        2
+    )
+
+
     # ============================
     # SAVE FORECAST HISTORY
     # ============================
@@ -329,7 +388,40 @@ def predict_future_sales(
 
         rmse=forecast_response[
             "rmse"
-        ]
+        ],
+
+        prediction_accuracy=
+        forecast_response.get(
+            "prediction_accuracy"
+        ),
+
+        seasonal_detected=
+        forecast_response.get(
+            "seasonal_detected",
+            False
+        ),
+
+        anomaly_detected=
+        forecast_response.get(
+            "anomaly_detected",
+            False
+        ),
+
+        retrained=
+        forecast_response.get(
+            "retrained",
+            False
+        ),
+
+        execution_time=
+        execution_time,
+
+        api_name="/forecast/predict",
+
+        activity_type=
+        "forecast_generation",
+
+        status="success"
     )
 
     db.add(history)
@@ -337,36 +429,37 @@ def predict_future_sales(
     db.commit()
 
     # ============================
-    # CREATE NOTIFICATION
+    # CREATE ACTIVITY LOG
     # ============================
 
-    create_notification(
+    create_activity_log(
 
         db=db,
 
         user_id=current_user.id,
 
-        title="Forecast Generated",
+        api_name="/forecast/predict",
 
-        message=f"{forecast_response['model']} forecast completed successfully."
+        activity_type="Forecast Generated",
+
+        module="Forecast"
+    )
+    # ============================
+    # CREATE NOTIFICATION
+    # ============================
+
+    create_forecast_notification(
+
+        db=db,
+
+        user_id=current_user.id,
+
+        model_name=
+        forecast_response[
+            "model"
+        ]
     )
 
-    # ============================
-    # FORMAT FORECAST
-    # ============================
-
-    formatted_forecast = []
-
-    for item in forecast_response["forecast"]:
-
-        formatted_forecast.append({
-
-            "month": item["month"],
-
-            "predicted_revenue": int(
-                item["predicted_revenue"]
-            )
-        })
 
     # ============================
     # RETURN RESPONSE
@@ -374,46 +467,67 @@ def predict_future_sales(
 
     return {
 
-        "model": forecast_response[
-            "model"
-        ],
+        "model":
+    forecast_response[
+        "model"
+    ],
 
-        "forecast_error_mape": round(
+    "forecast_error_mape":
+    forecast_response[
+        "forecast_error_mape"
+    ],
 
-            forecast_response[
-                "forecast_error_mape"
-            ],
+    "mae":
+    forecast_response[
+        "mae"
+    ],
 
-            2
-        ),
+    "rmse":
+    forecast_response[
+        "rmse"
+    ],
 
-        "mae": round(
+    "prediction_accuracy":
+    forecast_response.get(
+        "prediction_accuracy"
+    ),
 
-            forecast_response[
-                "mae"
-            ],
+    "seasonal_detected":
+    forecast_response.get(
+        "seasonal_detected"
+    ),
 
-            2
-        ),
+    "anomaly_detected":
+    forecast_response.get(
+        "anomaly_detected"
+    ),
 
-        "rmse": round(
+    "retrained":
+    forecast_response.get(
+        "retrained"
+    ),
 
-            forecast_response[
-                "rmse"
-            ],
+    "execution_time":
+    execution_time,
 
-            2
-        ),
+    "real_time_enabled":
+    True,
 
-        "forecast_months": future_months,
+    "auto_refresh":
+    True,
 
-        "category_filter": category,
+    "forecast_months":
+    future_months,
 
-        "product_filter": product,
+    "category_filter":
+    category,
 
-        "forecast": formatted_forecast
-    }
+    "product_filter":
+    product,
 
+    "forecast":
+    formatted_forecast
+}
 
 # ==================================
 # MODEL COMPARISON API
@@ -596,6 +710,19 @@ def compare_forecasting_models(
         key=lambda x: x[
             "forecast_error_mape"
         ]
+    )
+
+    create_activity_log(
+
+        db=db,
+
+        user_id=current_user.id,
+
+        api_name="/forecast/compare-models",
+
+        activity_type="Model Comparison",
+
+        module="Forecast"
     )
 
     return {

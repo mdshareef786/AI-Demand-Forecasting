@@ -42,7 +42,6 @@ from app.models import (
 # ==================================
 # IMPORT ROUTERS
 # ==================================
-
 from app.routers import (
 
     auth_router,
@@ -59,7 +58,31 @@ from app.routers import (
 
     admin_router,
 
-    notification_router
+    notification_router,
+
+    search_router,
+
+    inventory_router,
+
+    anomaly_router,
+
+    retraining_router,
+
+    revenue_router,
+
+    insights_router,
+
+    filter_router,
+
+    ensemble_router,
+
+    realtime_router,
+
+    export_router,
+
+    comparison_router,
+
+    cache_router
 )
 
 
@@ -80,21 +103,7 @@ app = FastAPI(
 
     title="AI Demand Forecasting API",
 
-    version="2.0.0",
-
-    description="""
-
-    Enterprise AI Demand Forecasting Platform
-
-    Features:
-    - AI Forecasting
-    - Analytics Dashboard
-    - Admin Panel
-    - Notifications
-    - Reports System
-    - Region Analytics
-    - Model Comparison
-    """
+    version="2.0.0"
 )
 
 
@@ -166,6 +175,53 @@ app.include_router(
     notification_router.router
 )
 
+app.include_router(
+    search_router.router
+)
+
+app.include_router(
+    inventory_router.router
+)
+
+app.include_router(
+    anomaly_router.router
+)
+
+app.include_router(
+    retraining_router.router
+)
+
+app.include_router(
+    revenue_router.router
+)
+
+app.include_router(
+    insights_router.router
+)
+
+app.include_router(
+    filter_router.router
+)
+
+app.include_router(
+    ensemble_router.router
+)
+
+app.include_router(
+    realtime_router.router
+)
+
+app.include_router(
+    export_router.router
+)
+
+app.include_router(
+    comparison_router.router
+)
+
+app.include_router(
+    cache_router.router
+)
 
 # ==================================
 # ROOT API

@@ -1,160 +1,403 @@
 import {
 
-  useEffect,
+Bell,
+Trash2
 
-  useState
+}
 
-} from "react"
-
-import axios from "axios"
+from "lucide-react"
 
 import {
 
-  Bell
+useState,
+useEffect
 
-} from "lucide-react"
-
-
-function NotificationDropdown() {
-
-  const [notifications, setNotifications] = useState([])
-
-  const [open, setOpen] = useState(false)
-
-
-  useEffect(() => {
-
-    fetchNotifications()
-
-  }, [])
-
-
-  const fetchNotifications = async () => {
-
-    try {
-
-      const token = localStorage.getItem("token")
-
-      const response = await axios.get(
-
-        "http://127.0.0.1:8000/notifications/",
-
-        {
-
-          headers: {
-
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-
-      setNotifications(
-
-        response.data.notifications
-      )
-
-    } catch (error) {
-
-      console.log(error)
-    }
-  }
-
-
-  return (
-
-    <div className="relative">
-
-      {/* BELL ICON */}
-
-      <button
-
-        onClick={() => setOpen(!open)}
-
-        className="relative p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition"
-      >
-
-        <Bell size={22} />
-
-        {
-
-          notifications.length > 0 && (
-
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
-
-              {notifications.length}
-
-            </span>
-          )
-        }
-
-      </button>
-
-
-      {/* DROPDOWN */}
-
-      {
-
-        open && (
-
-          <div className="absolute right-0 mt-3 w-96 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-50 p-4">
-
-            <h2 className="text-lg font-semibold mb-4">
-
-              Notifications
-
-            </h2>
-
-            {
-
-              notifications.length === 0 ? (
-
-                <p className="text-slate-400">
-
-                  No notifications
-
-                </p>
-
-              ) : (
-
-                <div className="space-y-3 max-h-96 overflow-auto">
-
-                  {
-
-                    notifications.map((item) => (
-
-                      <div
-
-                        key={item.id}
-
-                        className="bg-slate-800 p-4 rounded-xl"
-                      >
-
-                        <h3 className="font-semibold">
-
-                          {item.title}
-
-                        </h3>
-
-                        <p className="text-sm text-slate-300 mt-1">
-
-                          {item.message}
-
-                        </p>
-
-                      </div>
-                    ))
-                  }
-
-                </div>
-              )
-            }
-
-          </div>
-        )
-      }
-
-    </div>
-  )
 }
+
+from "react"
+
+import API from "../api/api"
+
+
+
+function NotificationDropdown(){
+
+const [
+
+open,
+
+setOpen
+
+]=useState(false)
+
+const [
+
+notifications,
+
+setNotifications
+
+]=useState([])
+
+
+
+useEffect(()=>{
+
+loadNotifications()
+
+},[])
+
+
+
+const loadNotifications=async()=>{
+
+try{
+
+const token=
+
+localStorage.getItem(
+"token"
+)
+
+const response=
+
+await API.get(
+
+"/notifications/",
+
+{
+
+headers:{
+
+Authorization:
+
+`Bearer ${token}`
+
+}
+
+}
+
+)
+
+
+
+let data=
+
+response.data
+
+
+
+if(
+
+Array.isArray(
+data
+)
+
+){
+
+setNotifications(
+data
+)
+
+return
+
+}
+
+
+
+if(
+
+data
+
+&&
+
+Array.isArray(
+data.notifications
+)
+
+){
+
+setNotifications(
+data.notifications
+)
+
+return
+
+}
+
+
+
+if(
+
+data
+
+&&
+
+typeof data==="object"
+
+){
+
+setNotifications(
+
+Object.values(
+data
+)
+
+)
+
+return
+
+}
+
+
+
+setNotifications([])
+
+}
+
+catch(error){
+
+console.log(error)
+
+setNotifications([])
+
+}
+
+}
+
+
+
+const clearNotifications=()=>{
+
+setNotifications([])
+
+}
+
+
+
+return(
+
+<div className="relative">
+
+<button
+
+onClick={()=>
+
+setOpen(
+
+!open
+
+)
+
+}
+
+className="relative"
+
+>
+
+<Bell size={18}/>
+
+{
+
+notifications.length>0 && (
+
+<span
+
+className="
+
+absolute
+
+-top-2
+
+-right-2
+
+bg-red-500
+
+rounded-full
+
+text-xs
+
+w-5
+
+h-5
+
+flex
+
+items-center
+
+justify-center
+
+"
+
+>
+
+{
+
+notifications.length
+
+}
+
+</span>
+
+)
+
+}
+
+</button>
+
+
+
+{
+
+open && (
+
+<div
+
+className="
+
+absolute
+
+right-0
+
+mt-4
+
+w-96
+
+bg-slate-900
+
+border
+
+border-slate-700
+
+rounded-2xl
+
+p-5
+
+z-50
+
+"
+
+>
+
+
+<div className="flex justify-between mb-4">
+
+<h3 className="font-bold">
+
+Notifications
+
+</h3>
+
+
+<button
+
+onClick={clearNotifications}
+
+className="text-red-400"
+
+>
+
+<Trash2 size={16}/>
+
+</button>
+
+</div>
+
+
+
+<div className="space-y-3 max-h-80 overflow-y-auto">
+
+{
+
+notifications.length===0
+
+?
+
+(
+
+<div className="text-center text-slate-400">
+
+No Notifications
+
+</div>
+
+)
+
+:
+
+notifications.map(
+
+(
+
+item,
+
+index
+
+)=>(
+
+<div
+
+key={index}
+
+className="bg-slate-800 p-4 rounded-xl"
+
+>
+
+<h4 className="font-semibold">
+
+{
+
+item.title
+
+||
+
+"Notification"
+
+}
+
+</h4>
+
+<p className="text-sm text-slate-400 mt-2">
+
+{
+
+item.message
+
+||
+
+item.description
+
+||
+
+JSON.stringify(
+item
+)
+
+}
+
+</p>
+
+</div>
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
+
+)
+
+}
+
+</div>
+
+)
+
+}
+
+
 
 export default NotificationDropdown

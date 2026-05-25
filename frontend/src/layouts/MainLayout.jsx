@@ -28,6 +28,8 @@ import toast from "react-hot-toast"
 
 import NotificationDropdown from "../components/NotificationDropdown"
 
+import ThemeToggle from "../components/ThemeToggle"
+
 
 function MainLayout() {
 
@@ -38,10 +40,6 @@ function MainLayout() {
   const [sidebarOpen, setSidebarOpen] =
     useState(false)
 
-
-  // ==================================
-  // LOGOUT
-  // ==================================
 
   const handleLogout = () => {
 
@@ -57,413 +55,248 @@ function MainLayout() {
   }
 
 
-  // ==================================
-  // NAVIGATION ITEMS
-  // ==================================
-
   const navItems = [
 
     {
       name: "Dashboard",
       path: "/dashboard",
-      icon: <LayoutDashboard size={20} />
+      icon: <LayoutDashboard size={20}/>
     },
 
     {
       name: "Upload Dataset",
       path: "/upload",
-      icon: <Upload size={20} />
+      icon: <Upload size={20}/>
     },
 
     {
       name: "Forecast",
       path: "/forecast",
-      icon: <BrainCircuit size={20} />
+      icon: <BrainCircuit size={20}/>
     },
 
     {
       name: "Reports",
       path: "/reports",
-      icon: <FileText size={20} />
+      icon: <FileText size={20}/>
     }
+
   ]
 
 
   return (
 
-    <div className="flex min-h-screen bg-slate-950 text-white">
+<div className="flex min-h-screen bg-slate-950 text-white">
 
 
-      {/* ================================== */}
-      {/* DESKTOP SIDEBAR */}
-      {/* ================================== */}
+<motion.div
 
-      <motion.div
+initial={{
+x:-100,
+opacity:0
+}}
 
-        initial={{
-          x: -100,
-          opacity: 0
-        }}
+animate={{
+x:0,
+opacity:1
+}}
 
-        animate={{
-          x: 0,
-          opacity: 1
-        }}
+transition={{
+duration:0.5
+}}
 
-        transition={{
-          duration: 0.5
-        }}
+className="hidden lg:flex w-72 bg-slate-900 border-r border-slate-800 flex-col justify-between p-6"
 
-        className="hidden lg:flex w-72 bg-slate-900 border-r border-slate-800 flex-col justify-between p-6"
-      >
+>
 
-        <div>
+<div>
 
-          {/* LOGO */}
+<div className="mb-12">
 
-          <div className="mb-12">
+<h1 className="text-3xl font-bold">
 
-            <h1 className="text-3xl font-bold tracking-wide">
+AI Forecast
 
-              AI Forecast
+</h1>
 
-            </h1>
+<p className="text-slate-400 mt-2 text-sm">
 
-            <p className="text-slate-400 mt-2 text-sm">
+Enterprise Forecasting Platform
 
-              Enterprise Forecasting Platform
+</p>
 
-            </p>
+</div>
 
-          </div>
 
+<nav className="space-y-3">
 
-          {/* NAVIGATION */}
+{
 
-          <nav className="space-y-3">
+navItems.map((item)=>{
 
-            {
+const active=
 
-              navItems.map((item) => {
+location.pathname===item.path
 
-                const active =
-                  location.pathname === item.path
+return(
 
-                return (
+<Link
 
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                  >
+key={item.name}
 
-                    <motion.div
+to={item.path}
 
-                      whileHover={{
-                        scale: 1.02
-                      }}
+>
 
-                      whileTap={{
-                        scale: 0.98
-                      }}
+<motion.div
 
-                      className={`
+whileHover={{
+scale:1.02
+}}
 
-                        flex items-center gap-4
-                        px-5 py-4
-                        rounded-2xl
-                        transition-all
-                        duration-300
+whileTap={{
+scale:0.98
+}}
 
-                        ${active
+className={`
 
-                          ? "bg-blue-600 shadow-lg shadow-blue-500/30"
+flex items-center gap-4
 
-                          : "hover:bg-slate-800 text-slate-300"
-                        }
+px-5 py-4
 
-                      `}
-                    >
+rounded-2xl
 
-                      {item.icon}
+${
 
-                      <span className="font-medium">
+active
 
-                        {item.name}
+?
 
-                      </span>
+"bg-blue-600"
 
-                    </motion.div>
+:
 
-                  </Link>
-                )
-              })
-            }
+"hover:bg-slate-800 text-slate-300"
 
-          </nav>
+}
 
-        </div>
+`}
 
+>
 
-        {/* LOGOUT */}
+{item.icon}
 
-        <motion.button
+<span>
 
-          whileHover={{
-            scale: 1.02
-          }}
+{item.name}
 
-          whileTap={{
-            scale: 0.98
-          }}
+</span>
 
-          onClick={handleLogout}
+</motion.div>
 
-          className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
-        >
+</Link>
 
-          <LogOut size={20} />
+)
 
-          Logout
+})
 
-        </motion.button>
+}
 
-      </motion.div>
+</nav>
 
+</div>
 
-      {/* ================================== */}
-      {/* MOBILE SIDEBAR */}
-      {/* ================================== */}
 
-      <AnimatePresence>
+<button
 
-        {
+onClick={handleLogout}
 
-          sidebarOpen && (
+className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-red-500/10 text-red-400"
 
-            <>
+>
 
-              {/* OVERLAY */}
+<LogOut size={20}/>
 
-              <motion.div
+Logout
 
-                initial={{
-                  opacity: 0
-                }}
+</button>
 
-                animate={{
-                  opacity: 1
-                }}
+</motion.div>
 
-                exit={{
-                  opacity: 0
-                }}
 
-                onClick={() =>
-                  setSidebarOpen(false)
-                }
 
-                className="fixed inset-0 bg-black/60 z-40 lg:hidden"
-              />
+<div className="flex-1 bg-slate-950 overflow-auto">
 
 
-              {/* SIDEBAR */}
+<div className="flex justify-between items-center px-5 lg:px-8 py-5 border-b border-slate-800 bg-slate-900 sticky top-0 z-30">
 
-              <motion.div
 
-                initial={{
-                  x: -300
-                }}
+<div className="flex items-center gap-4">
 
-                animate={{
-                  x: 0
-                }}
 
-                exit={{
-                  x: -300
-                }}
+<button
 
-                transition={{
-                  duration: 0.3
-                }}
+onClick={()=>
 
-                className="fixed top-0 left-0 z-50 w-72 h-full bg-slate-900 border-r border-slate-800 p-6 lg:hidden"
-              >
+setSidebarOpen(
+true
+)
 
-                {/* CLOSE BUTTON */}
+}
 
-                <div className="flex justify-end mb-6">
+className="lg:hidden bg-slate-800 p-2 rounded-xl"
 
-                  <button
+>
 
-                    onClick={() =>
-                      setSidebarOpen(false)
-                    }
+<Menu size={22}/>
 
-                    className="bg-slate-800 p-2 rounded-xl"
-                  >
+</button>
 
-                    <X size={22} />
 
-                  </button>
+<div>
 
-                </div>
+<h1 className="text-xl lg:text-2xl font-bold">
 
+AI Demand Forecasting
 
-                {/* MOBILE NAVIGATION */}
+</h1>
 
-                <nav className="space-y-3">
+<p className="text-slate-400 text-xs lg:text-sm">
 
-                  {
+Enterprise Analytics Dashboard
 
-                    navItems.map((item) => {
+</p>
 
-                      const active =
-                        location.pathname === item.path
+</div>
 
-                      return (
+</div>
 
-                        <Link
-                          key={item.name}
-                          to={item.path}
 
-                          onClick={() =>
-                            setSidebarOpen(false)
-                          }
-                        >
 
-                          <div
+<div className="flex items-center gap-4">
 
-                            className={`
+<ThemeToggle/>
 
-                              flex items-center gap-4
-                              px-5 py-4
-                              rounded-2xl
-                              transition-all
+<NotificationDropdown/>
 
-                              ${active
+</div>
 
-                                ? "bg-blue-600"
 
-                                : "hover:bg-slate-800 text-slate-300"
-                              }
+</div>
 
-                            `}
-                          >
 
-                            {item.icon}
+<div className="p-5 lg:p-8">
 
-                            <span>
+<Outlet/>
 
-                              {item.name}
+</div>
 
-                            </span>
+</div>
 
-                          </div>
+</div>
 
-                        </Link>
-                      )
-                    })
-                  }
+)
 
-                </nav>
-
-
-                {/* MOBILE LOGOUT */}
-
-                <button
-
-                  onClick={handleLogout}
-
-                  className="mt-10 flex items-center gap-4 px-5 py-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 transition w-full"
-                >
-
-                  <LogOut size={20} />
-
-                  Logout
-
-                </button>
-
-              </motion.div>
-
-            </>
-          )
-        }
-
-      </AnimatePresence>
-
-
-      {/* ================================== */}
-      {/* MAIN CONTENT */}
-      {/* ================================== */}
-
-      <div className="flex-1 bg-slate-950 overflow-auto">
-
-
-        {/* TOP NAVBAR */}
-
-        <div className="flex justify-between items-center px-5 lg:px-8 py-5 border-b border-slate-800 bg-slate-900 sticky top-0 z-30">
-
-          {/* LEFT SECTION */}
-
-          <div className="flex items-center gap-4">
-
-
-            {/* MOBILE MENU BUTTON */}
-
-            <button
-
-              onClick={() =>
-                setSidebarOpen(true)
-              }
-
-              className="lg:hidden bg-slate-800 p-2 rounded-xl"
-            >
-
-              <Menu size={22} />
-
-            </button>
-
-
-            {/* TITLE */}
-
-            <div>
-
-              <h1 className="text-xl lg:text-2xl font-bold">
-
-                AI Demand Forecasting
-
-              </h1>
-
-              <p className="text-slate-400 text-xs lg:text-sm">
-
-                Enterprise Analytics Dashboard
-
-              </p>
-
-            </div>
-
-          </div>
-
-
-          {/* NOTIFICATIONS */}
-
-          <NotificationDropdown />
-
-        </div>
-
-
-        {/* PAGE CONTENT */}
-
-        <div className="p-5 lg:p-8">
-
-          <Outlet />
-
-        </div>
-
-      </div>
-
-    </div>
-  )
 }
 
 export default MainLayout
