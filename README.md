@@ -470,7 +470,7 @@ venv\Scripts\activate
 
 pip install -r requirements.txt
 
-uvicorn app.main:app --reload
+fastapi dev app/main.py
 ```
 
 Backend:
