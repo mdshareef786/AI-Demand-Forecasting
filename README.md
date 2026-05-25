@@ -519,5 +519,4 @@ Completed:
 
 # Developer
 
-#### Syed Mahammad Sharref
-###### Python Developer
+#### Syed Mahammad Shareef
