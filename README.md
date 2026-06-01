@@ -1,455 +1,387 @@
 # AI Demand Forecasting Platform
 
-## Project Overview
+## Overview
 
-AI Demand Forecasting Platform is an end-to-end enterprise forecasting system developed for analyzing datasets, predicting future demand, monitoring sales trends, generating reports, and providing AI-driven business insights.
+AI Demand Forecasting Platform is a full-stack enterprise forecasting and analytics solution designed to help organizations predict future demand, analyze sales trends, monitor inventory risks, generate reports, and provide AI-driven business insights.
 
-The project was developed in multiple phases:
+The platform combines Machine Learning, Business Intelligence, Forecasting Models, Real-Time Monitoring, Automation, and Enterprise Analytics into a single scalable application.
 
-- Phase 1 – Core System Development
-- Phase 2 – Analytics & Forecast Enhancements
-- Phase 3 – Enterprise AI Features & Optimization
+Current Version: **2.0.0**
+---
 
-The application supports forecasting, analytics, reporting, monitoring, search, filtering, AI optimization, and role management.
+# Key Features
+
+## Forecasting Engine
+
+* Demand Forecasting
+* Future Sales Prediction
+* Prophet Forecasting Model
+* Linear Regression Model
+* Ensemble Forecast Model
+* Multi-Model Comparison
+* Forecast Confidence Analysis
+* Historical Forecast Comparison
 
 ---
 
-# Technologies Used
+## Analytics Module
 
-## Frontend
+* Monthly Sales Analytics
+* Revenue Analytics
+* Product Performance Analysis
+* Category Analytics
+* Region Analytics
+* Top Region Analysis
+* KPI Dashboard
+* Business Intelligence Insights
 
-- React.js
-- Vite
-- Tailwind CSS
-- Recharts
-- Framer Motion
-- Lucide React
+---
 
-## Backend
+## Dataset Management
 
-- FastAPI
-- SQLAlchemy
-- JWT Authentication
-- Pandas
-- Prophet
-- Scikit-Learn
-- NumPy
+* CSV Upload
+* Excel Upload
+* Dataset Validation
+* Data Cleaning
+* Dataset Search
+* Dataset History
+* Auto Dataset Processing
 
-## Database
+---
 
-- MySQL
+## Reports Module
 
-## ML Models
+* PDF Report Generation
+* Excel Export
+* Forecast Reports
+* Revenue Reports
+* Analytics Summary Reports
+* Downloadable Dashboard Reports
 
-- Prophet Forecasting
-- Linear Regression
-- Ensemble Forecast Model
+---
+
+## Smart Automation
+
+* Automated Forecast Scheduling
+* Recurring Forecast Execution
+* Auto Dataset Processing
+* Automated Alerts
+* Configurable Forecast Intervals
+* Forecast Refresh Automation
+
+---
+
+## Enterprise Integrations
+
+* Inventory Integration APIs
+* ERP Integration APIs
+* External API Integration
+* Webhook Support
+* Integration Settings Management
+
+---
+
+## AI Business Intelligence
+
+* Product Demand Recommendation Engine
+* Customer Buying Behavior Analysis
+* Demand Spike Detection
+* Low Stock Prediction
+* Inventory Optimization Suggestions
+* Seasonal Trend Analysis
+* Anomaly Detection
+* AI Generated Insights
+
+---
+
+## Real-Time Monitoring
+
+* Live Sales Monitoring
+* Forecast Monitoring
+* Inventory Monitoring
+* Dashboard Refresh
+* Activity Tracking
+
+---
+
+## Notification System
+
+* Email Notifications
+* Threshold Alerts
+* Forecast Failure Alerts
+* Report Completion Alerts
+* User Notification Center
+* Alert Configuration Settings
+
+---
+
+## User Management
+
+### Super Admin
+
+* Full Platform Access
+* User Management
+* Dataset Management
+* System Monitoring
+
+### Analyst
+
+* Forecast Access
+* Report Access
+* Analytics Access
+
+### Viewer
+
+* Read-Only Access
+* Dashboard Access
+
+---
+
+## Security Features
+
+* JWT Authentication
+* Protected APIs
+* Role-Based Access Control
+* Audit Logging
+* Account Status Validation
+* Secure File Validation
+* API Rate Limiting
+* Activity Tracking
 
 ---
 
 # Project Phases
 
-# Phase 1 – Core Development
+## Phase 1 – Core Development
 
-## User Authentication System
+### Authentication
 
-Implemented:
+* User Registration
+* User Login
+* JWT Authentication
+* Protected Routes
+* Token Validation
 
-- User Registration
-- User Login
-- JWT Authentication
-- Protected Routes
-- Token Validation
-- Logout
+### Dataset Management
 
-## Dataset Management
+* Dataset Upload
+* Dataset Validation
+* Dataset Storage
+* Data Cleaning
 
-Features:
+### Forecasting
 
-- Upload CSV datasets
-- Dataset storage
-- Dataset validation
-- Data cleaning
-- Dataset history
+* Prophet Forecasting
+* Future Prediction
+* Forecast History
 
-Supported:
+### Dashboard
 
-- Sales datasets
-- Inventory datasets
-- Demand datasets
-
-## Forecast Module
-
-Implemented:
-
-- Demand forecasting
-- Prophet model integration
-- Forecast visualization
-- Future prediction generation
-- Forecast history storage
-
-## Dashboard
-
-Dashboard includes:
-
-- Revenue cards
-- KPI widgets
-- Sales charts
-- Forecast visualization
-- Dataset metrics
+* KPI Cards
+* Revenue Metrics
+* Forecast Visualization
 
 ---
 
-# Phase 2 – Analytics & Reporting
+## Phase 2 – Analytics & Reporting
 
-## Sales Analytics
+### Analytics
 
-Added:
+* Monthly Sales Analysis
+* Revenue Analytics
+* Product Performance
+* Regional Analytics
 
-- Monthly sales analysis
-- Revenue analytics
-- Product performance
-- Sales trends
-- Growth tracking
+### Reporting
 
-## Region Analytics
+* PDF Reports
+* Excel Reports
+* Forecast Reports
+* Analytics Reports
 
-Implemented:
+### Notifications
 
-- Region-wise sales
-- Regional forecasting
-- Market comparison
-
-## Reports Module
-
-Features:
-
-- PDF report generation
-- Excel export
-- Forecast reports
-- Revenue reports
-- Analytics summary
-
-## Notifications
-
-Implemented:
-
-- System notifications
-- Forecast notifications
-- Dashboard alerts
-
-## Forecast History
-
-Added:
-
-- Previous forecasts
-- Model history
-- Historical comparisons
+* System Notifications
+* Dashboard Alerts
+* Forecast Alerts
 
 ---
 
-# Phase 3 – Enterprise Features
+## Phase 3 – Enterprise AI & Optimization
 
-## Real-Time Forecasting Module
+### AI Optimization
 
-Implemented:
+* Automated Retraining
+* Accuracy Tracking
+* Seasonal Detection
+* Anomaly Detection
 
-- Real-time forecasting
-- Live dashboard updates
-- Automatic refresh
-- Real-time monitoring
-- Sales tracking
+### Advanced Analytics
 
-## AI Optimization
+* Revenue Prediction
+* Inventory Risk Analysis
+* Forecast Comparison
+* Trend Analysis
 
-### Automated Retraining
+### Search & Filtering
 
-Features:
-
-- Retraining execution
-- Accuracy tracking
-- Performance comparison
-
-### Anomaly Detection
-
-Implemented:
-
-- Unusual sales detection
-- Risk alerts
-- Inventory anomalies
-
-### Ensemble Prediction
-
-Models:
-
-1. Prophet
-
-2. Linear Regression
-
-3. Ensemble Model
-
-### Seasonal Trend Detection
-
-Added:
-
-- Seasonal analysis
-- Trend detection
-- Pattern recognition
+* Global Search
+* Forecast Filters
+* Dataset Filters
+* Report Filters
 
 ---
 
-## Role Based Access Control
+## Phase 4 – Enterprise Automation & Intelligence
 
-Roles:
+### Smart Automation
 
-### Super Admin
+* Automated Scheduling
+* Recurring Forecasts
+* Automated Alerts
+* Dataset Processing Workflows
 
-- Full access
-- User management
-- System control
+### Enterprise Integrations
 
-### Analyst
+* ERP Integrations
+* Inventory Integrations
+* External APIs
+* Webhooks
 
-- Forecast access
-- Report access
-- Analytics management
+### Advanced AI Features
 
-### Viewer
+* Product Recommendations
+* Customer Behavior Analysis
+* Demand Spike Prediction
+* Low Stock Prediction
+* Inventory Optimization
 
-- Read only access
+### Dashboard Enhancements
 
-Protected:
+* Interactive Widgets
+* Downloadable Summaries
+* Advanced KPI Cards
+* Drill-Down Analytics
+* Responsive Dashboard
 
-- APIs
-- Dashboard pages
-- Reports
+### Security Enhancements
 
----
-
-## Advanced Analytics
-
-### Revenue Prediction
-
-Features:
-
-- Revenue forecast
-- Growth percentage
-- Profit estimation
-
-### Inventory Risk Analysis
-
-Categories:
-
-- High Risk
-- Medium Risk
-- Low Risk
-
-### Region Analytics
-
-Implemented:
-
-- Region sales chart
-- Forecast comparison
-
-### Category Analytics
-
-Implemented:
-
-- Category sales
-- Product insights
-- Demand distribution
+* JWT Security
+* Audit Logging
+* Access Control Validation
+* API Rate Limiting
+* Secure Upload Validation
 
 ---
 
-## System Monitoring
+# Technology Stack
 
-Implemented:
+## Frontend
 
-- API monitoring
-- User activity logs
-- Forecast history
-- System metrics
-- Monitoring dashboard
+* React.js
+* Vite
+* Tailwind CSS
+* Recharts
+* Framer Motion
+* Lucide React
 
----
+## Backend
 
-## Search & Filtering
+* FastAPI
+* SQLAlchemy
+* JWT Authentication
+* Pandas
+* NumPy
+* Prophet
+* Scikit-Learn
 
-### Global Search
+## Database
 
-Search support for:
+* MySQL
 
-- Datasets
-- Reports
-- Users
-- Forecasts
+## Machine Learning
 
-### Advanced Filters
-
-Implemented:
-
-- Forecast filters
-- Report filters
-- Dataset filters
-- User filters
-
----
-
-## Reports & AI Insights
-
-### Reports
-
-Supported:
-
-- PDF Forecast Reports
-- Revenue Reports
-- Analytics Summary
-- Excel Exports
-
-### AI Insights
-
-Generated:
-
-- Business recommendations
-- Growth insights
-- Inventory suggestions
-- Forecast insights
-
-### Comparison Reports
-
-Compared Models:
-
-- Prophet
-- Linear
-- Ensemble
-
----
-
-# Dashboard Features
-
-Dashboard includes:
-
-## KPI Cards
-
-- Revenue
-- Dataset Rows
-- Top Product
-- Highest Sale
-
-## Charts
-
-- Monthly Revenue Chart
-- Forecast Prediction Chart
-- Region Analytics
-- Category Analytics
-
-## Additional Features
-
-- Search
-- Filters
-- Notifications
-- Dark Mode
-- Reusable Components
+* Prophet
+* Linear Regression
+* Ensemble Forecasting
 
 ---
 
 # API Modules
 
-Implemented Routers:
+Implemented Modules:
 
-Authentication
+* Authentication
+* Users
+* Datasets
+* Analytics
+* Forecast
+* Reports
+* Notifications
+* Search
+* Inventory
+* Revenue
+* Retraining
+* Insights
+* Ensemble
+* Comparison
+* Automation
+* Cache
+* Audit
+* Security
+* Alert Settings
+* Real-Time Monitoring
 
-Users
+Total APIs: **50+ Enterprise APIs**
 
-Datasets
+---
 
-Analytics
+# Database Optimization
 
-Forecast
+Implemented:
 
-Reports
-
-Notifications
-
-Search
-
-Realtime Monitoring
-
-Inventory
-
-Revenue
-
-Retraining
-
-Ensemble
-
-Comparison
-
-Insights
-
-Cache
-
-Filters
-
-Activity Logs
-
-System Metrics
-
-Admin
+* Query Optimization
+* Index Optimization
+* User Indexing
+* Dataset Indexing
+* Forecast Indexing
+* Notification Indexing
+* Relationship Optimization
+* Cache Support
 
 ---
 
 # Folder Structure
 
-```bash
+```text
 AI-Demand-Forecasting/
 
 backend/
-
 │
-
 ├── app/
-
-│ ├── auth/
-
-│ ├── forecasting/
-
-│ ├── models/
-
-│ ├── routers/
-
-│ ├── schemas/
-
-│ ├── services/
-
-│ ├── database.py
-
-│ └── main.py
-
+│   ├── auth/
+│   ├── forecasting/
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   ├── services/
+│   ├── database.py
+│   └── main.py
 │
-
 frontend/
-
 │
-
 ├── src/
-
-│ ├── api/
-
-│ ├── components/
-
-│ ├── context/
-
-│ ├── layouts/
-
-│ ├── pages/
-
-│ └── App.jsx
+│   ├── api/
+│   ├── components/
+│   ├── context/
+│   ├── layouts/
+│   ├── pages/
+│   └── App.jsx
 ```
 
 ---
 
-# Installation
+# Installation Guide
 
 ## Clone Repository
 
@@ -473,13 +405,13 @@ pip install -r requirements.txt
 fastapi dev app/main.py
 ```
 
-Backend:
+Backend URL:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Swagger:
+Swagger Documentation:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -497,7 +429,7 @@ npm install
 npm run dev
 ```
 
-Frontend:
+Frontend URL:
 
 ```text
 http://localhost:5173
@@ -505,18 +437,6 @@ http://localhost:5173
 
 ---
 
-# Database Optimization
-
-Completed:
-
-- Query optimization
-- Index creation
-- Forecast indexing
-- Cache support
-- Relationship optimization
-
----
-
 # Developer
 
-#### Syed Mahammad Shareef
+## Syed Mahammad Shareef
