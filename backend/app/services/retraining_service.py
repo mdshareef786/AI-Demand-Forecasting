@@ -1,5 +1,9 @@
 from datetime import datetime
 
+from app.models.forecast_schedule import (
+    ForecastSchedule
+)
+
 
 def auto_retrain_model():
 
@@ -11,7 +15,9 @@ def auto_retrain_model():
 
     improvement = round(
 
-        accuracy_after -
+        accuracy_after
+
+        -
 
         accuracy_before,
 
@@ -36,4 +42,57 @@ def auto_retrain_model():
 
         "improvement":
         improvement
+    }
+
+
+
+# ==================================
+# RECURRING FORECAST
+# ==================================
+
+def run_recurring_forecast():
+
+    execution_time = datetime.now()
+
+    return {
+
+        "recurring_execution":
+        True,
+
+        "status":
+        "Forecast Executed",
+
+        "executed_at":
+
+        execution_time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+
+        "next_run":
+        "daily"
+    }
+
+
+
+# ==================================
+# AUTO FORECAST REFRESH
+# ==================================
+
+def auto_forecast_refresh():
+
+    refresh_time = datetime.now()
+
+    return {
+
+        "refresh":
+        True,
+
+        "timestamp":
+
+        refresh_time.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
+
+        "forecast":
+        "updated"
     }

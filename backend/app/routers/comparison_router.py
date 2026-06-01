@@ -1,5 +1,16 @@
 from fastapi import APIRouter
 
+from app.services.comparison_service import (
+
+    accuracy_trend,
+
+    historical_forecast,
+
+    confidence_score,
+
+    trend_recommendations
+)
+
 router = APIRouter(
 
     prefix="/comparison",
@@ -8,59 +19,120 @@ router = APIRouter(
 )
 
 
+
+# ==========================
+# REPORT
+# ==========================
+
 @router.get(
-    "/report"
+"/report"
 )
+
 def comparison_report():
 
-    prophet_accuracy = 89.4
+    prophet=89.4
 
-    linear_accuracy = 84.2
+    linear=84.2
 
-    ensemble_accuracy = 92.1
+    ensemble=92.1
 
-
-    best_model = max(
+    best=max(
 
         {
 
             "Prophet":
-            prophet_accuracy,
+            prophet,
 
             "Linear":
-            linear_accuracy,
+            linear,
 
             "Ensemble":
-            ensemble_accuracy
+            ensemble
 
         },
 
-        key=lambda x: {
+        key=lambda x:{
 
             "Prophet":
-            prophet_accuracy,
+            prophet,
 
             "Linear":
-            linear_accuracy,
+            linear,
 
             "Ensemble":
-            ensemble_accuracy
+            ensemble
 
         }[x]
-    )
 
+    )
 
     return {
 
         "prophet":
-        prophet_accuracy,
+        prophet,
 
         "linear":
-        linear_accuracy,
+        linear,
 
         "ensemble":
-        ensemble_accuracy,
+        ensemble,
 
         "best_model":
-        best_model
+        best
     }
+
+
+
+# ==========================
+# ACCURACY TREND
+# ==========================
+
+@router.get(
+"/accuracy-trend"
+)
+
+def trend():
+
+    return accuracy_trend()
+
+
+
+# ==========================
+# HISTORY
+# ==========================
+
+@router.get(
+"/historical"
+)
+
+def history():
+
+    return historical_forecast()
+
+
+
+# ==========================
+# CONFIDENCE
+# ==========================
+
+@router.get(
+"/confidence"
+)
+
+def confidence():
+
+    return confidence_score()
+
+
+
+# ==========================
+# RECOMMENDATION
+# ==========================
+
+@router.get(
+"/recommendations"
+)
+
+def recommendation():
+
+    return trend_recommendations()

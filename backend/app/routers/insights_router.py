@@ -7,6 +7,18 @@ router = APIRouter(
     tags=["AI Business Insights"]
 )
 
+from app.services.advanced_ai_service import (
+
+    demand_recommendation,
+
+    customer_behavior,
+
+    demand_spike,
+
+    low_stock,
+
+    inventory_ai
+)
 
 @router.get(
     "/generate"
@@ -45,3 +57,71 @@ def generate_insights():
         "recommendations":
         recommendations
     }
+
+# ==========================
+# DEMAND RECOMMENDATION
+# ==========================
+
+@router.get(
+"/recommendation"
+)
+
+def recommendation():
+
+    return demand_recommendation()
+
+
+
+# ==========================
+# BUYING BEHAVIOR
+# ==========================
+
+@router.get(
+"/customer-behavior"
+)
+
+def behavior():
+
+    return customer_behavior()
+
+
+
+# ==========================
+# DEMAND SPIKE
+# ==========================
+
+@router.get(
+"/demand-spike"
+)
+
+def spike():
+
+    return demand_spike()
+
+
+
+# ==========================
+# LOW STOCK
+# ==========================
+
+@router.get(
+"/low-stock"
+)
+
+def stock():
+
+    return low_stock()
+
+
+
+# ==========================
+# INVENTORY AI
+# ==========================
+
+@router.get(
+"/inventory-ai"
+)
+
+def inventory():
+
+    return inventory_ai()

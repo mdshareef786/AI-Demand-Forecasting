@@ -11,6 +11,12 @@ ThemeProvider
 }
 from "./context/ThemeContext"
 
+import {
+AppProvider
+}
+from "./context/AppContext"
+
+
 ReactDOM.createRoot(
 
 document.getElementById(
@@ -21,11 +27,15 @@ document.getElementById(
 
 <React.StrictMode>
 
+<AppProvider>
+
 <ThemeProvider>
 
 <App />
 
 </ThemeProvider>
+
+</AppProvider>
 
 </React.StrictMode>
 

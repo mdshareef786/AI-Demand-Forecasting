@@ -34,6 +34,7 @@ from app.models import (
     user,
     dataset,
     forecast_history,
+    forecast_schedule,
     report,
     notification
 )
@@ -82,7 +83,19 @@ from app.routers import (
 
     comparison_router,
 
-    cache_router
+    cache_router,
+
+    automation_router,
+
+    audit_router,
+
+    security_router,
+
+    jwt_security_router,
+
+    background_router,
+
+    alert_settings_router
 )
 
 
@@ -221,6 +234,30 @@ app.include_router(
 
 app.include_router(
     cache_router.router
+)
+
+app.include_router(
+    automation_router.router
+)
+
+app.include_router(
+    audit_router.router
+)
+
+app.include_router(
+    security_router.router
+)
+
+app.include_router(
+    jwt_security_router.router
+)
+
+app.include_router(
+    background_router.router
+)
+
+app.include_router(
+    alert_settings_router.router
 )
 
 # ==================================

@@ -1,49 +1,30 @@
-import { useContext } from "react"
-
-import {
-ThemeContext
-}
-from "../context/ThemeContext"
-
-
 function ThemeToggle(){
-
-const {
-theme,
-toggleTheme
-}
-=
-useContext(
-ThemeContext
-)
 
 return(
 
-<button
+<div
 
-onClick={
-toggleTheme
-}
+className="
 
-className="bg-slate-800 px-4 py-2 rounded-xl"
+bg-slate-800
+
+px-4
+
+py-2
+
+rounded-xl
+
+text-white
+
+font-medium
+
+"
 
 >
 
-{
+🌙 Dark Mode
 
-theme==="dark"
-
-?
-
-"🌙 Dark"
-
-:
-
-"☀ Light"
-
-}
-
-</button>
+</div>
 
 )
 

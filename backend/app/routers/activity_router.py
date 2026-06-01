@@ -53,3 +53,35 @@ def get_activity_logs(
     ).all()
 
     return logs
+
+@router.get("/summary")
+def activity_summary(
+
+    db: Session = Depends(get_db),
+
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    total_logs = db.query(
+        ActivityLog
+    ).filter(
+
+        ActivityLog.user_id
+        ==
+        current_user.id
+
+    ).count()
+
+    return {
+
+        "user_id":
+        current_user.id,
+
+        "activities":
+        total_logs,
+
+        "status":
+        "tracked"
+    }

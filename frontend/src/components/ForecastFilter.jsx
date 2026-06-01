@@ -1,10 +1,23 @@
-import { useState } from "react"
+import { useState,useContext } from "react"
+
+import {
+ThemeContext
+}
+from "../context/ThemeContext"
 
 function ForecastFilter({
 
 onFilter
 
 }){
+
+const {
+theme
+}
+=
+useContext(
+ThemeContext
+)
 
 const [
 
@@ -26,11 +39,43 @@ setRegion
 "All Regions"
 )
 
-
-
 return(
 
-<div className="flex gap-4">
+<div className="flex flex-wrap gap-4 mb-6">
+
+<div className="flex flex-col">
+
+<label
+
+className={`
+
+text-sm
+
+font-medium
+
+mb-2
+
+${
+
+theme==="dark"
+
+?
+
+"text-slate-300"
+
+:
+
+"text-slate-600"
+
+}
+
+`}
+
+>
+
+Forecast Model
+
+</label>
 
 <select
 
@@ -53,7 +98,35 @@ region
 
 }}
 
-className="bg-slate-900 text-white px-4 py-2 rounded-xl"
+className={`
+
+px-4
+
+py-3
+
+rounded-2xl
+
+outline-none
+
+min-w-[220px]
+
+transition
+
+${
+
+theme==="dark"
+
+?
+
+"bg-slate-900 text-white border border-slate-700"
+
+:
+
+"bg-white text-slate-900 border border-gray-300 shadow-sm"
+
+}
+
+`}
 
 >
 
@@ -83,7 +156,41 @@ Ensemble
 
 </select>
 
+</div>
 
+<div className="flex flex-col">
+
+<label
+
+className={`
+
+text-sm
+
+font-medium
+
+mb-2
+
+${
+
+theme==="dark"
+
+?
+
+"text-slate-300"
+
+:
+
+"text-slate-600"
+
+}
+
+`}
+
+>
+
+Business Region
+
+</label>
 
 <select
 
@@ -106,7 +213,35 @@ value
 
 }}
 
-className="bg-slate-900 text-white px-4 py-2 rounded-xl"
+className={`
+
+px-4
+
+py-3
+
+rounded-2xl
+
+outline-none
+
+min-w-[220px]
+
+transition
+
+${
+
+theme==="dark"
+
+?
+
+"bg-slate-900 text-white border border-slate-700"
+
+:
+
+"bg-white text-slate-900 border border-gray-300 shadow-sm"
+
+}
+
+`}
 
 >
 
@@ -141,6 +276,8 @@ North America
 </option>
 
 </select>
+
+</div>
 
 </div>
 

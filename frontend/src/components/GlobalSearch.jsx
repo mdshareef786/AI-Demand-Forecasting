@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react"
+import { useState,useEffect,useContext } from "react"
 
 import { Search,X } from "lucide-react"
 
@@ -6,11 +6,23 @@ import { useNavigate } from "react-router-dom"
 
 import API from "../api/api"
 
+import {
+ThemeContext
+}
+from "../context/ThemeContext"
 
 
 function GlobalSearch(){
 
 const navigate=useNavigate()
+
+const {
+theme
+}
+=
+useContext(
+ThemeContext
+)
 
 const [
 
@@ -27,7 +39,6 @@ results,
 setResults
 
 ]=useState([])
-
 
 
 useEffect(()=>{
@@ -49,7 +60,6 @@ searchData()
 },[keyword])
 
 
-
 const searchData=async()=>{
 
 try{
@@ -62,35 +72,19 @@ await API.get(
 
 )
 
-
-
 let items=[]
 
-
-
 items.push(
-
 ...(response.data.datasets || [])
-
 )
 
-
-
 items.push(
-
 ...(response.data.reports || [])
-
 )
-
-
 
 items.push(
-
 ...(response.data.users || [])
-
 )
-
-
 
 setResults(items)
 
@@ -105,10 +99,7 @@ console.log(error)
 }
 
 
-
 const openItem=(item)=>{
-
-
 
 if(item.filename){
 
@@ -128,17 +119,12 @@ dataset:item
 
 )
 
-
-
 setKeyword("")
-
 setResults([])
 
 return
 
 }
-
-
 
 if(item.report_name){
 
@@ -158,30 +144,18 @@ report:item
 
 )
 
-
-
 setKeyword("")
-
 setResults([])
 
 return
 
 }
-
-
 
 if(item.user_name){
 
-navigate(
-
-"/admin"
-
-)
-
-
+navigate("/admin")
 
 setKeyword("")
-
 setResults([])
 
 return
@@ -189,24 +163,19 @@ return
 }
 
 }
-
 
 
 return(
 
-<div className="relative w-full max-w-md mb-6">
-
-
+<div className="relative w-full max-w-xl mb-6">
 
 <Search
 
 size={18}
 
-className="absolute left-3 top-3 text-slate-400"
+className="absolute left-4 top-4 text-slate-400"
 
 />
-
-
 
 <input
 
@@ -214,45 +183,49 @@ type="text"
 
 value={keyword}
 
-placeholder="Search datasets, reports, users"
+placeholder="Search datasets, reports, users, analytics..."
 
 onChange={(e)=>
 
 setKeyword(
-
 e.target.value
-
 )
 
 }
 
-className="
+className={`
 
 w-full
 
-pl-10
+pl-12
 
 pr-10
 
-py-3
+py-4
 
-bg-slate-900
-
-border
-
-border-slate-700
-
-rounded-xl
-
-text-white
+rounded-2xl
 
 outline-none
 
-"
+transition
+
+${
+
+theme==="dark"
+
+?
+
+"bg-slate-900 border border-slate-700 text-white"
+
+:
+
+"bg-white border border-gray-300 text-slate-900 shadow-md"
+
+}
+
+`}
 
 />
-
-
 
 {
 
@@ -267,7 +240,7 @@ setResults([])
 
 }}
 
-className="absolute right-3 top-3 text-slate-400"
+className="absolute right-4 top-4 text-slate-400"
 
 >
 
@@ -280,36 +253,45 @@ className="absolute right-3 top-3 text-slate-400"
 }
 
 
-
 {
 
 results.length>0 && (
 
 <div
 
-className="
+className={`
 
 absolute
 
-top-14
+top-16
 
 w-full
 
-bg-slate-900
-
-border
-
-border-slate-700
-
-rounded-xl
+rounded-2xl
 
 z-50
 
-max-h-72
+max-h-80
 
 overflow-y-auto
 
-"
+shadow-2xl
+
+${
+
+theme==="dark"
+
+?
+
+"bg-slate-900 border border-slate-700"
+
+:
+
+"bg-white border border-gray-200"
+
+}
+
+`}
 
 >
 
@@ -329,23 +311,57 @@ openItem(item)
 
 }
 
-className="
+className={`
 
-p-3
-
-border-b
-
-border-slate-800
-
-hover:bg-slate-800
+p-4
 
 cursor-pointer
 
-"
+transition
+
+border-b
+
+${
+
+theme==="dark"
+
+?
+
+"border-slate-800 hover:bg-slate-800"
+
+:
+
+"border-gray-100 hover:bg-gray-50"
+
+}
+
+`}
 
 >
 
-<div className="font-medium text-white">
+<div
+
+className={`
+
+font-semibold
+
+${
+
+theme==="dark"
+
+?
+
+"text-white"
+
+:
+
+"text-slate-900"
+
+}
+
+`}
+
+>
 
 {
 
@@ -367,9 +383,29 @@ item.user_name
 
 </div>
 
+<div
 
+className={`
 
-<div className="text-xs text-slate-400">
+text-xs mt-1
+
+${
+
+theme==="dark"
+
+?
+
+"text-slate-400"
+
+:
+
+"text-slate-500"
+
+}
+
+`}
+
+>
 
 {
 
@@ -401,14 +437,10 @@ item.email
 
 }
 
-
-
 </div>
 
 )
 
 }
-
-
 
 export default GlobalSearch

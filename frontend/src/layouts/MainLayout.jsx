@@ -4,8 +4,7 @@ import {
   BrainCircuit,
   FileText,
   LogOut,
-  Menu,
-  X
+  Menu
 } from "lucide-react"
 
 import {
@@ -15,21 +14,21 @@ import {
   useNavigate
 } from "react-router-dom"
 
-import {
-  motion,
-  AnimatePresence
-} from "framer-motion"
+import { motion } from "framer-motion"
 
 import {
-  useState
+  useState,
+  useContext
 } from "react"
 
 import toast from "react-hot-toast"
 
 import NotificationDropdown from "../components/NotificationDropdown"
-
 import ThemeToggle from "../components/ThemeToggle"
 
+import {
+  ThemeContext
+} from "../context/ThemeContext"
 
 function MainLayout() {
 
@@ -37,15 +36,16 @@ function MainLayout() {
 
   const location = useLocation()
 
+  const {
+    theme
+  } = useContext(ThemeContext)
+
   const [sidebarOpen, setSidebarOpen] =
     useState(false)
 
-
   const handleLogout = () => {
 
-    localStorage.removeItem(
-      "token"
-    )
+    localStorage.removeItem("token")
 
     toast.success(
       "Logged out successfully"
@@ -53,7 +53,6 @@ function MainLayout() {
 
     navigate("/")
   }
-
 
   const navItems = [
 
@@ -83,11 +82,31 @@ function MainLayout() {
 
   ]
 
-
   return (
 
-<div className="flex min-h-screen bg-slate-950 text-white">
+<div
 
+className={`
+
+flex min-h-screen
+
+${
+
+theme === "dark"
+
+?
+
+"bg-slate-950 text-white"
+
+:
+
+"bg-gray-100 text-slate-900"
+
+}
+
+`}
+
+>
 
 <motion.div
 
@@ -105,7 +124,35 @@ transition={{
 duration:0.5
 }}
 
-className="hidden lg:flex w-72 bg-slate-900 border-r border-slate-800 flex-col justify-between p-6"
+className={`
+
+hidden lg:flex
+
+w-72
+
+flex-col
+
+justify-between
+
+p-6
+
+border-r
+
+${
+
+theme === "dark"
+
+?
+
+"bg-slate-900 border-slate-800"
+
+:
+
+"bg-white border-gray-200"
+
+}
+
+`}
 
 >
 
@@ -119,14 +166,13 @@ AI Forecast
 
 </h1>
 
-<p className="text-slate-400 mt-2 text-sm">
+<p className="mt-2 text-sm">
 
-Enterprise Forecasting Platform
+Enterprise Intelligence Platform
 
 </p>
 
 </div>
-
 
 <nav className="space-y-3">
 
@@ -134,18 +180,15 @@ Enterprise Forecasting Platform
 
 navItems.map((item)=>{
 
-const active=
+const active =
 
-location.pathname===item.path
+location.pathname === item.path
 
 return(
 
 <Link
-
 key={item.name}
-
 to={item.path}
-
 >
 
 <motion.div
@@ -172,11 +215,19 @@ active
 
 ?
 
-"bg-blue-600"
+"bg-blue-600 text-white"
 
 :
 
+theme === "dark"
+
+?
+
 "hover:bg-slate-800 text-slate-300"
+
+:
+
+"hover:bg-gray-100 text-slate-700"
 
 }
 
@@ -206,12 +257,23 @@ active
 
 </div>
 
-
 <button
 
 onClick={handleLogout}
 
-className="flex items-center gap-4 px-5 py-4 rounded-2xl bg-red-500/10 text-red-400"
+className="
+
+flex items-center gap-4
+
+px-5 py-4
+
+rounded-2xl
+
+bg-red-500/10
+
+text-red-500
+
+"
 
 >
 
@@ -223,28 +285,81 @@ Logout
 
 </motion.div>
 
+<div
 
+className={`
 
-<div className="flex-1 bg-slate-950 overflow-auto">
+flex-1 overflow-auto
 
+${
 
-<div className="flex justify-between items-center px-5 lg:px-8 py-5 border-b border-slate-800 bg-slate-900 sticky top-0 z-30">
+theme === "dark"
 
+?
+
+"bg-slate-950"
+
+:
+
+"bg-gray-100"
+
+}
+
+`}
+
+>
+
+<div
+
+className={`
+
+flex justify-between items-center
+
+px-5 lg:px-8 py-5
+
+border-b
+
+sticky top-0 z-30
+
+${
+
+theme === "dark"
+
+?
+
+"bg-slate-900 border-slate-800"
+
+:
+
+"bg-white border-gray-200"
+
+}
+
+`}
+
+>
 
 <div className="flex items-center gap-4">
-
 
 <button
 
 onClick={()=>
-
-setSidebarOpen(
-true
-)
-
+setSidebarOpen(true)
 }
 
-className="lg:hidden bg-slate-800 p-2 rounded-xl"
+className="
+
+lg:hidden
+
+p-2
+
+rounded-xl
+
+bg-slate-800
+
+text-white
+
+"
 
 >
 
@@ -252,26 +367,23 @@ className="lg:hidden bg-slate-800 p-2 rounded-xl"
 
 </button>
 
-
 <div>
 
 <h1 className="text-xl lg:text-2xl font-bold">
 
-AI Demand Forecasting
+AI Demand Forecasting Platform
 
 </h1>
 
-<p className="text-slate-400 text-xs lg:text-sm">
+<p className="text-xs lg:text-sm">
 
-Enterprise Analytics Dashboard
+Enterprise Decision Intelligence Dashboard
 
 </p>
 
 </div>
 
 </div>
-
-
 
 <div className="flex items-center gap-4">
 
@@ -281,9 +393,7 @@ Enterprise Analytics Dashboard
 
 </div>
 
-
 </div>
-
 
 <div className="p-5 lg:p-8">
 
@@ -295,8 +405,7 @@ Enterprise Analytics Dashboard
 
 </div>
 
-)
-
+  )
 }
 
 export default MainLayout

@@ -22,6 +22,9 @@ from app.auth.oauth2 import get_current_user
 
 from app.services.data_cleaning import clean_dataset
 
+from app.services.auto_dataset_service import (
+    auto_process_dataset
+)
 
 router = APIRouter(
     prefix="/dataset",
@@ -142,6 +145,10 @@ async def upload_dataset(
             file_path
         )
 
+        processing_result = auto_process_dataset(
+            file_path
+        )
+
         # ============================
         # SAVE DATASET METADATA
         # ============================
@@ -182,17 +189,21 @@ async def upload_dataset(
 
         return {
 
-            "message":
-                "Dataset uploaded successfully",
+        "message":
+        "Dataset uploaded successfully",
 
-            "rows":
-                len(df),
+        "filename":
+        file.filename,
 
-            "columns":
-                len(df.columns),
+        "rows":
+        len(df),
 
-            "filename":
-                file.filename
+        "columns":
+        len(df.columns),
+
+        "workflow":
+        processing_result
+
         }
 
     except HTTPException:
