@@ -17,7 +17,11 @@ from app.services.advanced_ai_service import (
 
     low_stock,
 
-    inventory_ai
+    inventory_ai,
+
+    high_growth_products,
+
+    declining_products
 )
 
 @router.get(
@@ -125,3 +129,29 @@ def stock():
 def inventory():
 
     return inventory_ai()
+
+# ==========================
+# HIGH GROWTH PRODUCTS
+# ==========================
+
+@router.get(
+"/high-growth"
+)
+
+def high_growth():
+
+    return high_growth_products()
+
+
+
+# ==========================
+# DECLINING PRODUCTS
+# ==========================
+
+@router.get(
+"/declining-products"
+)
+
+def declining():
+
+    return declining_products()

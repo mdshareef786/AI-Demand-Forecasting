@@ -4,7 +4,20 @@ import {
   BrainCircuit,
   FileText,
   LogOut,
-  Menu
+  Menu,
+  FolderOpen,
+  BarChart3,
+  BriefcaseBusiness,
+  Users,
+  History,
+  Scale,
+  LineChart,
+  Sparkles,
+  Activity,
+  Bell,
+  Target,
+  Bot,
+  Database
 } from "lucide-react"
 
 import {
@@ -63,6 +76,30 @@ function MainLayout() {
     },
 
     {
+      name: "Projects",
+      path: "/projects",
+      icon: <FolderOpen size={20}/>
+    },
+
+    {
+      name: "Scenario Analysis",
+      path: "/scenario-analysis",
+      icon: <BarChart3 size={20}/>
+    },
+
+    {
+      name: "Executive Dashboard",
+      path: "/executive-dashboard",
+      icon: <BriefcaseBusiness size={20}/>
+    },
+
+    {
+      name: "Collaboration",
+      path: "/collaboration",
+      icon: <Users size={20}/>
+    },
+
+    {
       name: "Upload Dataset",
       path: "/upload",
       icon: <Upload size={20}/>
@@ -72,6 +109,60 @@ function MainLayout() {
       name: "Forecast",
       path: "/forecast",
       icon: <BrainCircuit size={20}/>
+    },
+
+    {
+      name: "Forecast History",
+      path: "/forecast-history",
+      icon: <History size={20}/>
+    },
+
+    {
+      name: "Accuracy Center",
+      path: "/accuracy-center",
+      icon: <Target size={20}/>
+    },
+
+    {
+      name: "Model Comparison",
+      path: "/model-comparison",
+      icon: <Scale size={20}/>
+    },
+
+    {
+      name: "Advanced Analytics",
+      path: "/advanced-analytics",
+      icon: <LineChart size={20}/>
+    },
+
+    {
+      name: "AI Insights",
+      path: "/ai-insights",
+      icon: <Sparkles size={20}/>
+    },
+
+    {
+      name: "Realtime Monitor",
+      path: "/realtime-monitor",
+      icon: <Activity size={20}/>
+    },
+
+    {
+      name: "Notifications",
+      path: "/notifications",
+      icon: <Bell size={20}/>
+    },
+
+    {
+      name: "Automation Center",
+      path: "/automation-center",
+      icon: <Bot size={20}/>
+    },
+
+    {
+      name: "Dataset Versions",
+      path: "/dataset-version-center",
+      icon: <Database size={20}/>
     },
 
     {

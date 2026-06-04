@@ -110,3 +110,53 @@ def inventory_ai():
         "optimization":
         True
     }
+
+# ==========================
+# HIGH GROWTH PRODUCTS
+# ==========================
+
+def high_growth_products():
+
+    return {
+
+        "products": [
+
+            {
+                "name": "Laptop",
+                "growth": "32%"
+            },
+
+            {
+                "name": "Mobile",
+                "growth": "27%"
+            },
+
+            {
+                "name": "Headphones",
+                "growth": "18%"
+            }
+        ]
+    }
+
+
+# ==========================
+# DECLINING PRODUCTS
+# ==========================
+
+def declining_products():
+
+    return {
+
+        "products": [
+
+            {
+                "name": "Tablet",
+                "decline": "15%"
+            },
+
+            {
+                "name": "Printer",
+                "decline": "11%"
+            }
+        ]
+    }

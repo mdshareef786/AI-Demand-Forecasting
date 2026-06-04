@@ -772,3 +772,67 @@ def compare_forecasting_models(
             }
         ]
     }
+
+# ==================================
+# FORECAST HISTORY API
+# ==================================
+
+@router.get("/history")
+def get_forecast_history(
+
+    db: Session = Depends(get_db),
+
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    history = db.query(
+
+        ForecastHistory
+
+    ).filter(
+
+        ForecastHistory.user_id
+        == current_user.id
+
+    ).order_by(
+
+        ForecastHistory.id.desc()
+
+    ).all()
+
+    return [
+
+        {
+
+            "id": item.id,
+
+            "model_used":
+            item.model_used,
+
+            "forecast_months":
+            item.forecast_months,
+
+            "prediction_accuracy":
+            item.prediction_accuracy,
+
+            "mape":
+            item.mape,
+
+            "mae":
+            item.mae,
+
+            "rmse":
+            item.rmse,
+
+            "execution_time":
+            item.execution_time,
+
+            "status":
+            item.status
+
+        }
+
+        for item in history
+    ]

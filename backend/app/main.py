@@ -36,7 +36,8 @@ from app.models import (
     forecast_history,
     forecast_schedule,
     report,
-    notification
+    notification,
+    project_permission
 )
 
 
@@ -95,7 +96,31 @@ from app.routers import (
 
     background_router,
 
-    alert_settings_router
+    alert_settings_router,
+
+    project_router,
+
+    scenario_router,
+
+    project_activity_router,
+
+    executive_router,
+
+    ai_insights_engine_router,
+
+    collaboration_router,
+
+    dataset_version_router,
+
+    accuracy_router,
+
+    executive_reporting_router,
+
+    dashboard_layout_router
+)
+
+from app.routers import (
+    project_permission_router
 )
 
 
@@ -258,6 +283,50 @@ app.include_router(
 
 app.include_router(
     alert_settings_router.router
+)
+
+app.include_router(
+    project_router.router
+)
+
+app.include_router(
+    scenario_router.router
+)
+
+app.include_router(
+    project_activity_router.router
+)
+
+app.include_router(
+    executive_router.router
+)
+
+app.include_router(
+    ai_insights_engine_router.router
+)
+
+app.include_router(
+    collaboration_router.router
+)
+
+app.include_router(
+    dataset_version_router.router
+)
+
+app.include_router(
+    accuracy_router.router
+)
+
+app.include_router(
+    executive_reporting_router.router
+)
+
+app.include_router(
+    dashboard_layout_router.router
+)
+
+app.include_router(
+    project_permission_router.router
 )
 
 # ==================================
