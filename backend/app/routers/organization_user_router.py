@@ -3,6 +3,8 @@ from fastapi import (
     Depends
 )
 
+from app.models.organization_user import OrganizationUser
+
 from sqlalchemy.orm import Session
 
 from app.database import (
@@ -131,3 +133,16 @@ def remove_user(
             member_id
         )
     }
+
+# ==========================
+# GET ALL USERS
+# ==========================
+
+@router.get("/")
+def get_all_users(
+    db: Session = Depends(get_db)
+):
+
+    return db.query(
+        OrganizationUser
+    ).all()

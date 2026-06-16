@@ -55,50 +55,49 @@ function ForecastGovernance() {
     }
   }
 
-  const createGovernance =
-    async () => {
+  const createGovernance = async () => {
 
-      try {
+    try {
 
-        await API.post(
+      await API.post(
 
-          "/forecast-governance/create",
+        "/forecast-governance/create",
 
-          null,
+        null,
 
-          {
-            params: {
+        {
+          params: {
 
-              forecast_id:
-                Number(forecastId),
+            forecast_id:
+              Number(forecastId),
 
-              version,
+            version,
 
-              lifecycle_status:
-                status,
+            modified_by:
+              1,
 
-              change_summary:
-                changeSummary
-            }
+            remarks:
+              changeSummary
           }
-        )
+        }
+      )
 
-        setForecastId("")
-        setVersion("")
-        setStatus("draft")
-        setChangeSummary("")
+      setForecastId("")
+      setVersion("")
+      setStatus("draft")
+      setChangeSummary("")
 
-        loadData()
+      loadData()
 
-      } catch (error) {
+    } catch (error) {
 
-        console.log(error)
+      console.log(error)
 
-        alert(
-          "Governance record creation failed"
-        )
-      }
+      alert(
+        "Governance record creation failed"
+      )
     }
+  }
 
   return (
 

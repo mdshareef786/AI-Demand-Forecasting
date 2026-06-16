@@ -13,6 +13,8 @@ def create_governance_record(
 
     modified_by,
 
+    lifecycle_status="draft",
+
     remarks=""
 ):
 
@@ -21,6 +23,8 @@ def create_governance_record(
         forecast_id=forecast_id,
 
         version=version,
+
+        lifecycle_status="draft",
 
         modified_by=modified_by,
 

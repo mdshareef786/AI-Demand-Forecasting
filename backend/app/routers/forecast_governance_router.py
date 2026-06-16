@@ -39,11 +39,11 @@ def create(
 
     modified_by: int,
 
+    lifecycle_status: str = "draft",
+
     remarks: str = "",
 
-    db: Session = Depends(
-        get_db
-    )
+    db: Session = Depends(get_db)
 ):
 
     return create_governance_record(

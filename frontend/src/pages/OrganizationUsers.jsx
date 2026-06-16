@@ -62,45 +62,48 @@ function OrganizationUsers() {
       }
     }
 
-  const assignUser =
-    async () => {
+  const assignUser = async () => {
 
-      try {
+    try {
 
-        await API.post(
+      await API.post(
 
-          "/organization-users/create",
+        "/organization-users/add",
 
-          null,
+        null,
 
-          {
-            params: {
+        {
+          params: {
 
-              user_id:
-                Number(userId),
+            organization_id:
+              Number(organizationId),
 
-              organization_id:
-                Number(
-                  organizationId
-                )
-            }
+            user_id:
+              Number(userId),
+
+            role:
+              "analyst"
+
           }
-        )
+        }
+      )
 
-        setUserId("")
-        setOrganizationId("")
+      alert(
+        "User assigned successfully"
+      )
 
-        loadUsers()
+      setUserId("")
+      setOrganizationId("")
 
-      } catch (error) {
+    } catch (error) {
 
-        console.log(error)
+      console.log(error)
 
-        alert(
-          "User assignment failed"
-        )
-      }
+      alert(
+        "User assignment failed"
+      )
     }
+  }
 
   const deleteUser =
     async (id) => {
