@@ -26,6 +26,16 @@ import Notifications from "./pages/Notifications"
 import AccuracyCenter from "./pages/AccuracyCenter"
 import AutomationCenter from "./pages/AutomationCenter"
 import DatasetVersionCenter from "./pages/DatasetVersionCenter"
+import Organizations from "./pages/Organizations"
+import OrganizationUsers from "./pages/OrganizationUsers"
+import ForecastApproval from "./pages/ForecastApproval"
+import WorkflowAutomation from "./pages/WorkflowAutomation"
+import StrategicPlanning from "./pages/StrategicPlanning"
+import KPIManagement from "./pages/KPIManagement"
+import DataQualityCenter from "./pages/DataQualityCenter"
+import ForecastGovernance from "./pages/ForecastGovernance"
+import NotificationCenter from "./pages/NotificationCenter"
+import ExecutiveCommandCenter from "./pages/ExecutiveCommandCenter"
 
 import MainLayout from "./layouts/MainLayout"
 
@@ -391,6 +401,158 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+
+            path="/organizations"
+
+            element={
+
+              <ProtectedRoute
+
+                allowedRoles={[
+
+                  "super_admin",
+
+                  "analyst",
+
+                  "viewer"
+
+                ]}
+              >
+
+                <Organizations />
+
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/organization-users"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <OrganizationUsers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/forecast-approval"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <ForecastApproval />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/workflow-automation"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <WorkflowAutomation />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/strategic-planning"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <StrategicPlanning />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/kpi-management"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}  
+              >
+                <KPIManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/data-quality-center"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <DataQualityCenter />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/forecast-governance"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <ForecastGovernance />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/notification-center"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <NotificationCenter />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/executive-command-center"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "analyst"
+                ]}
+              >
+                <ExecutiveCommandCenter />
+              </ProtectedRoute>
+            }
+          />
+
 
           {/* DATASET */}
 

@@ -17,7 +17,17 @@ import {
   Bell,
   Target,
   Bot,
-  Database
+  Database,
+  Building2,
+  UserCog,
+  ClipboardCheck,
+  Workflow,
+  Goal,
+  Gauge,
+  ShieldCheck,
+  GitBranch,
+  BellRing,
+  Command
 } from "lucide-react"
 
 import {
@@ -82,6 +92,18 @@ function MainLayout() {
     },
 
     {
+      name: "Organizations",
+      path: "/organizations",
+      icon: <Building2 size={20}/>
+    },
+
+    {
+      name: "Organization Users",
+      path: "/organization-users",
+      icon: <UserCog size={20}/>
+    },
+
+    {
       name: "Scenario Analysis",
       path: "/scenario-analysis",
       icon: <BarChart3 size={20}/>
@@ -115,6 +137,18 @@ function MainLayout() {
       name: "Forecast History",
       path: "/forecast-history",
       icon: <History size={20}/>
+    },
+
+    {
+      name: "Forecast Approval",
+      path: "/forecast-approval",
+      icon: <ClipboardCheck size={20}/>
+    },
+
+    {
+      name: "Forecast Governance",
+      path: "/forecast-governance",
+      icon: <GitBranch size={20}/>
     },
 
     {
@@ -154,15 +188,51 @@ function MainLayout() {
     },
 
     {
+      name: "Notification Center",
+      path: "/notification-center",
+      icon: <BellRing size={20}/>
+    },
+
+    {
       name: "Automation Center",
       path: "/automation-center",
       icon: <Bot size={20}/>
     },
 
     {
+      name: "Workflow Automation",
+      path: "/workflow-automation",
+      icon: <Workflow size={20}/>
+    },
+
+    {
+      name: "Strategic Planning",
+      path: "/strategic-planning",
+      icon: <Goal size={20}/>
+    },
+
+    {
       name: "Dataset Versions",
       path: "/dataset-version-center",
       icon: <Database size={20}/>
+    },
+
+    {
+      name: "KPI Management",
+      path: "/kpi-management",
+      icon: <Gauge size={20}/>
+    },
+
+    {
+      name: "Data Quality",
+      path: "/data-quality-center",
+      icon: <ShieldCheck size={20}/>
+    },
+
+    {
+      name: "Executive Command",
+      path: "/executive-command-center",
+      icon: <Command size={20}/>
     },
 
     {
